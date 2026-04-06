@@ -385,6 +385,10 @@ detection:
   selection:
     CommandLine|contains: "wmic"
   condition: selection
+```
+
+```
+</> yaml
 title: WinRM Usage
 logsource: {product: windows}
 detection:
