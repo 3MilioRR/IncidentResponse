@@ -8,14 +8,15 @@ Las reglas SIGMA son como plantillas genéricas para detectar actividad sospecho
 No están ligadas a una herramienta concreta. Luego se convierten a formatos específicos (Splunk, Elastic, Sentinel, etc.).
 
 🧠 Ejemplo sencillo (fichero YAML)
-<code>
+
+```
 title: Uso sospechoso de PowerShell
 detection:
   selection:
     Image: powershell.exe
     CommandLine: "*DownloadString*"
   condition: selection
-</code>
+```
 
 👉 Traducción:
 
