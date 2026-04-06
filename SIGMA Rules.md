@@ -31,11 +31,11 @@ Deberás adaptar:
 
 Ejemplos de reglas para los siguientes topics
 
-- :clipboard: [Power Shell Execution](#PowerShell-&-Execution)
-- :anchor: [Persistence](#Persistence)
-- :ticket: [Privilege Escalation & Credential Access](#Privilege-Escalation-&-Credential-Access)
-- :ladder: [Lateral Movement & Discovery](#Lateral-Movement-&-Discovery)
-- :goal_net: [Exfiltration & Impact](#Exfiltration-&-Impact)
+- :clipboard: [Power Shell Execution](#powershell--execution)
+- :anchor: [Persistence](#persistence)
+- :ticket: [Privilege Escalation & Credential Access](#privilege-escalation--credential-access)
+- :ladder: [Lateral Movement & Discovery](#lateral-movement--discovery)
+- :goal_net: [Exfiltration & Impact](#exfiltration--impact)
 
 
 ### PowerShell & Execution
