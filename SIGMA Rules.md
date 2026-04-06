@@ -35,7 +35,7 @@ Ejemplos de reglas para los siguientes topics
 - Persistence [:anchor:](#Persistence)
 - Privilege Escalation & Credential Access [:ticket:](#Privilege Escalation & Credential Access)
 - Lateral Movement & Discovery [:ladder:](#Lateral Movement & Discovery)
-- Exfiltration & Impact [:goal_net:](#Exfiltration)
+- Exfiltration & Impact [:goal_net:](#'Exfiltration & Impact')
 
 
 
