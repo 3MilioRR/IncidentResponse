@@ -562,3 +562,31 @@ detection:
     TargetFilename|contains: ".locked"
   condition: selection
 ```
+
+
+## Reglas complejas 
+
+Sea libre de combinar las reglas en reglas más complejas para activar las alarmas.
+Por ejemplo:
+
+```
+</> yaml
+detection:
+  selection1:
+    Image|endswith: powershell.exe
+  selection2:
+    CommandLine|contains: "EncodedCommand"
+  filter:
+    User: "SYSTEM"
+  condition: selection1 AND selection2 AND NOT filter
+```
+
+Este ejemplo haría sañltar una alarma si se cumplen las tres condiciones
+
+```
+</> yaml
+powershell.exe
+AND encoded command
+AND user != SYSTEM
+```
+
