@@ -29,6 +29,11 @@ Deberás adaptar:
 
 ## 50 reglas sigma
 
+Ejemplos de reglas para los siguientes topics
+
+- Power Shell Execution (#PowerShell / Execution)
+- Persistence (#Persistence)
+
 ### PowerShell / Execution
 
 ```
