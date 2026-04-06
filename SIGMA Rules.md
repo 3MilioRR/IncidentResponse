@@ -406,6 +406,7 @@ detection:
     EventID: 4624
     LogonType: 10
   condition: selection
+```
 
 ```
 </> yaml
@@ -425,6 +426,7 @@ detection:
   selection:
     CommandLine|contains: "netstat"
   condition: selection
+```
 
 ```
 </> yaml
