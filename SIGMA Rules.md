@@ -32,7 +32,7 @@ Deberás adaptar:
 Ejemplos de reglas para los siguientes topics
 
 - Power Shell Execution (#PowerShell / Execution)
-- Persistence [Link Text](#Persistence)
+- Persistence [:anchor:](#Persistence)
 
 ### PowerShell / Execution
 
