@@ -491,6 +491,7 @@ detection:
   selection:
     CommandLine|contains: "copy"
   condition: selection
+```
 
 ```
 </> yaml
@@ -560,4 +561,4 @@ detection:
   selection:
     TargetFilename|contains: ".locked"
   condition: selection
-  ```
+```
