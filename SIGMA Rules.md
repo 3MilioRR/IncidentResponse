@@ -1,13 +1,11 @@
 <H1> SIGMA RULES </H1>
 Las reglas SIGMA son como plantillas genéricas para detectar actividad sospechosa en logs.
 
-👉 Piensa en ellas como:
-
-“Si pasa esto en los logs → puede ser un ataque”
+:triangular_flag_on_post: Piensa en ellas como: “Si pasa esto en los logs → puede ser un ataque”
 
 No están ligadas a una herramienta concreta. Luego se convierten a formatos específicos (Splunk, Elastic, Sentinel, etc.).
 
-🧠 Ejemplo sencillo (fichero YAML)
+Ejemplo sencillo (fichero YAML)
 
 ```
 title: Uso sospechoso de PowerShell
@@ -18,6 +16,6 @@ detection:
   condition: selection
 ```
 
-👉 Traducción:
+Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
 
-Si alguien usa PowerShell para descargar cosas → sospechoso
+
