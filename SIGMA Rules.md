@@ -42,6 +42,7 @@ detection:
 ```
 
 ```
+</> yaml
 title: PowerShell DownloadString
 logsource: {product: windows}
 detection:
@@ -50,13 +51,18 @@ detection:
   condition: selection
 ```
 
-
+```
+</> yaml
 title: PowerShell Invoke-WebRequest
 logsource: {product: windows}
 detection:
   selection:
     CommandLine|contains: "Invoke-WebRequest"
   condition: selection
+```
+
+```
+</> yaml
 title: PowerShell from Office
 logsource: {product: windows}
 detection:
@@ -66,12 +72,20 @@ detection:
       - excel.exe
     Image|endswith: powershell.exe
   condition: selection
+```
+
+```
+</> yaml
 title: PowerShell IEX Usage
 logsource: {product: windows}
 detection:
   selection:
     CommandLine|contains: "IEX"
   condition: selection
+```
+
+```
+</> yaml
 title: PowerShell Hidden Window
 logsource: {product: windows}
 detection:
@@ -80,12 +94,20 @@ detection:
       - "-nop"
       - "-w hidden"
   condition: selection
+```
+
+```
+</> yaml
 title: PowerShell Base64 Long String
 logsource: {product: windows}
 detection:
   selection:
     CommandLine|re: "[A-Za-z0-9+/]{200,}"
   condition: selection
+```
+
+```
+</> yaml
 title: Suspicious Cmd Execution
 logsource: {product: windows}
 detection:
@@ -93,6 +115,10 @@ detection:
     Image|endswith: cmd.exe
     CommandLine|contains: "/c"
   condition: selection
+```
+
+```
+</> yaml
 title: Rundll32 Remote Execution
 logsource: {product: windows}
 detection:
@@ -100,6 +126,10 @@ detection:
     Image|endswith: rundll32.exe
     CommandLine|contains: "http"
   condition: selection
+```
+
+```
+</> yaml
 title: Regsvr32 Remote Script
 logsource: {product: windows}
 detection:
@@ -107,4 +137,6 @@ detection:
     Image|endswith: regsvr32.exe
     CommandLine|contains: "http"
   condition: selection
+```
+
 
