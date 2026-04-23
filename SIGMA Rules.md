@@ -3,7 +3,7 @@ Las reglas SIGMA son como plantillas genéricas para detectar actividad sospecho
 
 :triangular_flag_on_post: Piensa en ellas como: “Si pasa esto en los logs → puede ser un ataque”
 
-No están ligadas a una herramienta concreta. Luego se convierten a formatos específicos (Splunk, Elastic, Sentinel, etc.).
+No están ligadas a una herramienta concreta, para que funciones es necesario convertirlas al formato específico de la herramienta que utilices (Splunk, Elastic, Sentinel, etc.).
 
 Ejemplo sencillo (fichero YAML)
 
@@ -20,12 +20,13 @@ Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
 
 A continuación tienes un set de ***50 reglas Sigma*** (simplificadas pero funcionales) listas para usar como base.
 
-⚠️ Importante: Están optimizadas para claridad y uso práctico, no para cubrir todos los edge cases.
+⚠️ Importante: Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
 
 Deberás adaptar:
 - logsource
 - campos (Sysmon vs Security vs MDE)
-Úsalas como plantilla operativa, no como copy/paste ciego.
+
+Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque.
 
 ## 50 reglas sigma
 
