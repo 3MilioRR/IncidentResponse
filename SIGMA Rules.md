@@ -52,17 +52,17 @@ detection:
 ```
 
 ```
-</> yaml - 
+</> AAT&CK: T1105 - yaml - 
 title: PowerShell DownloadString
 logsource: {product: windows}
 detection:
   selection:
     CommandLine|contains: "DownloadString"
   condition: selection
-```
+``` 
 
 ```
-</> yaml
+</> AAT&CK: T1105 - yaml
 title: PowerShell Invoke-WebRequest
 logsource: {product: windows}
 detection:
@@ -72,7 +72,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1204 - yaml
 title: PowerShell from Office
 logsource: {product: windows}
 detection:
@@ -85,7 +85,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1059.001 - yaml
 title: PowerShell IEX Usage
 logsource: {product: windows}
 detection:
@@ -95,7 +95,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1564 - yaml
 title: PowerShell Hidden Window
 logsource: {product: windows}
 detection:
@@ -107,7 +107,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1027 - yaml
 title: PowerShell Base64 Long String
 logsource: {product: windows}
 detection:
@@ -117,7 +117,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1059.003 - yaml
 title: Suspicious Cmd Execution
 logsource: {product: windows}
 detection:
@@ -128,7 +128,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1218.011 - yaml
 title: Rundll32 Remote Execution
 logsource: {product: windows}
 detection:
@@ -139,7 +139,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> AAT&CK: T1218.010 - yaml
 title: Regsvr32 Remote Script
 logsource: {product: windows}
 detection:
