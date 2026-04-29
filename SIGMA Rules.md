@@ -1,5 +1,5 @@
 <H1> SIGMA RULES </H1>
-Las reglas SIGMA son como plantillas genéricas para detectar actividad sospechosa en logs.
+Las reglas SIGMA son plantillas genéricas para detectar actividad sospechosa en logs.
 
 :triangular_flag_on_post: Piensa en ellas como: “Si pasa esto en los logs → puede ser un ataque”
 
@@ -42,7 +42,7 @@ Ejemplos de reglas para los siguientes topics
 ### PowerShell & Execution
 
 ```
-</> yaml
+</> AAT&CK: T1059.001 - yaml
 title: Suspicious PowerShell Encoded Command
 logsource: {product: windows}
 detection:
@@ -52,7 +52,7 @@ detection:
 ```
 
 ```
-</> yaml
+</> yaml - 
 title: PowerShell DownloadString
 logsource: {product: windows}
 detection:
