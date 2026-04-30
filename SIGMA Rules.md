@@ -16,19 +16,11 @@ detection:
   condition: selection
 ```
 
-Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
+¿que inidica esté pseudo-código? Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
 
-A continuación tienes un set de ***50 reglas Sigma*** (simplificadas pero funcionales) listas para usar como base.
-
-⚠️ Importante: Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
-
-Deberás adaptar:
-- logsource
-- campos (Sysmon vs Security vs MDE)
-
-Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque.
 
 ## 50 reglas sigma
+A continuación tienes un set de ***50 reglas Sigma*** (simplificadas pero funcionales) listas para usar como base.
 
 Ejemplos de reglas para los siguientes topics
 
@@ -37,6 +29,15 @@ Ejemplos de reglas para los siguientes topics
 - :ticket: [Privilege Escalation & Credential Access](Rules/Escalado%20de%20Privilegios%20y%20Acceso%20a%20Credenciales.md)
 - :ladder: [Lateral Movement & Discovery](Rules/Movimiento%20Lateral%20y%20descubrimiento.md)
 - :goal_net: [Exfiltración e Impacto](Rules/Exfiltracion%20e%20Impacto.md)
+
+Más abajo te explico cómo puedes combinarlas en [Reglas más complejas](#reglas--mas--complejas)
+
+⚠️ Importante: Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
+
+Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica que quieras cubrir y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque.
+
+
+
 
 
 ### PowerShell & Execution
@@ -256,7 +257,7 @@ detection:
 
 
 
-## Reglas complejas 
+### Reglas complejas 
 
 Sea libre de combinar las reglas en reglas más complejas para activar las alarmas.
 Por ejemplo:
