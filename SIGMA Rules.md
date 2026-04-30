@@ -42,13 +42,19 @@ Ejemplos de reglas para los siguientes topics
 ### PowerShell & Execution
 
 ```
-</> AAT&CK: T1059.001 - yaml
-title: Suspicious PowerShell Encoded Command
-logsource: {product: windows}
+</> AAT&CK: T1059.001, T1027 - yaml
 detection:
-  selection:
-    CommandLine|contains: "EncodedCommand"
-  condition: selection
+  selection1:
+    Image|endswith: powershell.exe
+  selection2:
+    CommandLine|contains:
+      - EncodedCommand
+      - -enc
+  filter:
+    User:
+      - SYSTEM
+      - svc_backup
+  condition: selection1 AND selection2 AND NOT filter
 ```
 
 ```
