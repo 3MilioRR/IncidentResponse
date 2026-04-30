@@ -30,7 +30,7 @@ Ejemplos de reglas para los siguientes topics
 - :ladder: [Lateral Movement & Discovery](Rules/Movimiento%20Lateral%20y%20descubrimiento.md)
 - :goal_net: [Exfiltración e Impacto](Rules/Exfiltracion%20e%20Impacto.md)
 
-Más abajo te explico cómo puedes combinarlas en [Reglas más complejas](#reglas--mas--complejas)
+Más abajo te explico cómo puedes combinarlas en [Reglas más complejas](#reglas-mas-complejas)
 
 ⚠️ Importante: Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
 
