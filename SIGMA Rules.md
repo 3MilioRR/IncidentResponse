@@ -59,12 +59,61 @@ detection:
 
 ```
 </> AAT&CK: T1105 - yaml - 
-title: PowerShell DownloadString
-logsource: {product: windows}
+title: Suspicious PowerShell DownloadString with Execution
+id: 9d4b5c2a-6f13-4b8f-a2d1-ps-downloadstring-001
+status: experimental
+description: Detects suspicious PowerShell usage of DownloadString combined with execution patterns commonly associated with malware delivery and fileless attacks.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://attack.mitre.org/techniques/T1105/
+author: ERR
+tags:
+  - attack.execution
+  - attack.command_and_scripting_interpreter
+  - attack.t1059.001
+  - attack.ingress_tool_transfer
+  - attack.t1105
+
+logsource:
+  product: windows
+  category: process_creation
+
 detection:
-  selection:
-    CommandLine|contains: "DownloadString"
-  condition: selection
+  selection_download:
+    CommandLine|contains:
+      - DownloadString
+      - Net.WebClient
+
+  selection_execution:
+    CommandLine|contains:
+      - IEX
+      - Invoke-Expression
+      - iex(
+      - iex 
+      - Hidden
+      - -enc
+      - -nop
+      - bypass
+
+  selection_process:
+    Image|endswith:
+      - \powershell.exe
+      - \pwsh.exe
+
+  filter_legitimate_paths:
+    ParentImage|contains:
+      - \Microsoft Configuration Manager\
+      - \SCCM\
+      - \IntuneManagementExtension\
+
+  condition: all of selection_* and not filter_legitimate_paths
+
+falsepositives:
+  - Administrative scripts using PowerShell for software deployment
+  - Endpoint management tools (SCCM, Intune, RMM)
+  - Legitimate automation using remote script retrieval
+
+level: high
 ``` 
 
 ```
