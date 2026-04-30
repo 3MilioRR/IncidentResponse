@@ -36,7 +36,7 @@ Ejemplos de reglas para los siguientes topics
 - :anchor: [Persistence](#persistence)
 - :ticket: [Privilege Escalation & Credential Access](#privilege-escalation--credential-access)
 - :ladder: [Lateral Movement & Discovery](#lateral-movement--discovery)
-- :goal_net: [Exfiltration & Impact](#exfiltration--impact)
+- :goal_net: [Rules/Exfiltracion%20e%20Impacto.md](#exfiltration--impact)
 
 
 ### PowerShell & Execution
