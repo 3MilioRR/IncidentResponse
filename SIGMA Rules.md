@@ -20,9 +20,9 @@ detection:
 
 
 ## 50 reglas sigma
-A continuación tienes un set de ***50 reglas Sigma*** (simplificadas pero funcionales) listas para usar como base.
+A continuación tienes un set de ***50 reglas Sigma*** listas para usar como base. Las tienes en versión 'basic' (simplificadas pero funcionales) y versión 'advanced' (optimizadas para usar).
 
-Ejemplos de reglas para los siguientes topics
+He repartido las reglas en diferentes categorías atendiendo a los siguientes temas:
 
 - :clipboard: [Power Shell Execution](#powershell--execution)
 - :anchor: [Persistence](Rules/Persistencia.md)
