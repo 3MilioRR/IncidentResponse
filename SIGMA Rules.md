@@ -32,9 +32,17 @@ Ejemplos de reglas para los siguientes topics
 
 Más abajo te explico cómo puedes combinarlas en [Reglas más complejas](#reglas-complejas)
 
-⚠️ Importante: Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
+⚠️ Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como plantilla operativa, no hagas un simple copy/paste.
 
-Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica que quieras cubrir y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque.
+
+## Importante
+
+Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica que quieras cubrir y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque. De nada sirve la regla si el log no está activo o no se registra actividad.
+
+
+
+Recuerda que SIGMA es agnostica de tus herraminetas. Describe el comportamiento del atacante, pero no la implementación específica en  un determinado SIEM.
+
 
 
 
