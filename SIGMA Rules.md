@@ -28,7 +28,7 @@ Ejemplos de reglas para los siguientes topics
 - :anchor: [Persistence](Rules/Persistencia.md)
 - :ticket: [Privilege Escalation & Credential Access](Rules/Escalado%20de%20Privilegios%20y%20Acceso%20a%20Credenciales.md)
 - :ladder: [Lateral Movement & Discovery](Rules/Movimiento%20Lateral%20y%20descubrimiento.md)
-- :goal_net: [Exfiltración e Impacto](Rules/Exfiltracion%20e%20Impacto.md)
+- :goal_net: Exfiltrsacion e Impacto [(Basic)](Rules/Exfiltracion%20e%20Impacto.md)
 
 Más abajo te explico cómo puedes combinarlas en [Reglas más complejas](#reglas-complejas)
 
