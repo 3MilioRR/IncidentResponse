@@ -293,7 +293,7 @@ tags:
   - attack.t1003.002
 ```
 
-</>
+</>    
 Detecta el uso de herramientas y comandos comunes para realizar volcados de memoria del proceso LSASS
 ```
 </> ATT&CK: T1003 - yaml
@@ -340,7 +340,7 @@ tags:
   - attack.t1003.001
 ```
 
-</>
+</>    
 Detecta el uso de privilegios sensibles asociados a la manipulación de tokens o elevación de privilegios
 ```
 </> ATT&CK: T1134 - yaml
@@ -388,7 +388,7 @@ tags:
   - attack.t1134
 ```
 
-</>
+</>    
 Detecta la enumeración de grupos privilegiados mediante comandos
 ```
 </> ATT&CK: T1069 - yaml
