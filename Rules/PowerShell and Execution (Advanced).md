@@ -186,62 +186,278 @@ tags:
 ```
 
 
-
+</>  
+Detecta ejecucionn sospechosa de PowerShell desde aplicaciones Microsoft Offices, comunmente asociadas al uso de macros
 ```
-</> AAT&CK: T1204 - yaml
-title: PowerShell from Office
-logsource: {product: windows}
+</> AAT&CK: T1204, T1059.001 - yaml
+title: Suspicious PowerShell Spawned by Office Applications
+id: 91b3e0f4-office-pshell
+status: experimental
+description: Detecta ejecucionn sospechosa de PowerShell desde aplicaciones Microsoft Offices, comunmente asociadas al uso de macros
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
+  selection_office_parent:
     ParentImage|endswith:
-      - winword.exe
-      - excel.exe
-    Image|endswith: powershell.exe
-  condition: selection
+      - \winword.exe
+      - \excel.exe
+      - \powerpnt.exe
+      - \outlook.exe
+  selection_powershell:
+    Image|endswith:
+      - \powershell.exe
+      - \pwsh.exe
+  selection_suspicious_args:
+    CommandLine|contains:
+      - "-EncodedCommand"
+      - "-enc"
+      - "IEX"
+      - "Invoke-Expression"
+      - "DownloadString"
+      - "Invoke-WebRequest"
+      - "iwr"
+  selection_hidden_execution:
+    CommandLine|contains:
+      - "-WindowStyle Hidden"
+      - "-w hidden"
+      - "-nop"
+      - "-noprofile"
+  filter_legit_paths:
+    ParentImage|contains:
+      - "Program Files\\Microsoft Office\\root\\Office"
+  condition: selection_office_parent and selection_powershell and (selection_suspicious_args or selection_hidden_execution)
+fields:
+  - Image
+  - ParentImage
+  - CommandLine
+falsepositives:
+  - Rare administrative scripts triggered via Office add-ins
+  - Custom enterprise macros (should be baselined)
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+``
 ```
+
+</>   
 
 ```
 </> AAT&CK: T1059.001 - yaml
-title: PowerShell IEX Usage
-logsource: {product: windows}
+title: Suspicious PowerShell Invoke-Expression (IEX) Usage
+id: 7c2f1a9d-ps-iex
+status: experimental
+description: Detecta uso sospechoso de Invoke-Expression (IEX) en PowerShell, comunmente usado para ejecutar payloads descargados u ofuscados
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    CommandLine|contains: "IEX"
-  condition: selection
-```
-
-```
-</> AAT&CK: T1564 - yaml
-title: PowerShell Hidden Window
-logsource: {product: windows}
-detection:
-  selection:
+  selection_iex:
+    CommandLine|contains:
+      - "IEX"
+      - "Invoke-Expression"
+  selection_download:
+    CommandLine|contains:
+      - "DownloadString"
+      - "Invoke-WebRequest"
+      - "iwr"
+      - "Net.WebClient"
+  selection_encoded:
+    CommandLine|contains:
+      - "-EncodedCommand"
+      - "-enc"
+  selection_obfuscation:
+    CommandLine|contains:
+      - "FromBase64String"
+      - "New-Object"
+  selection_hidden:
     CommandLine|contains:
       - "-nop"
+      - "-noprofile"
       - "-w hidden"
-  condition: selection
+  condition: selection_iex and (selection_download or selection_encoded or selection_obfuscation or selection_hidden)
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+falsepositives:
+  - Administrative scripts using Invoke-Expression (rare in production)
+  - Developer scripts or automation tools
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
 ```
 
+</>
+Detecta la ejecución de PowerShell con parámetros de ocultación o evasión como ventanas ocultas
+```
+</> AAT&CK: T1564, T1059.001 - yaml
+title: PowerShell Hidden or Silent Execution Flags
+id: 5a6b9c21-ps-hidden, 
+status: experimental
+description: Detecta la ejecución de PowerShell con parámetros de ocultación o evasión como ventanas ocultas o sin carga de perfil, técnica común en ataques para evitar la detección
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_powershell:
+    Image|endswith:
+      - \powershell.exe
+      - \pwsh.exe
+  selection_flags:
+    CommandLine|contains:
+      - "-w hidden"
+      - "-windowstyle hidden"
+      - "-nop"
+      - "-noprofile"
+  selection_suspicious_context:
+    CommandLine|contains:
+      - "-enc"
+      - "-EncodedCommand"
+      - "IEX"
+      - "Invoke-Expression"
+      - "DownloadString"
+      - "Invoke-WebRequest"
+      - "iwr"
+  selection_parent:
+    ParentImage|endswith:
+      - \winword.exe
+      - \excel.exe
+      - \outlook.exe
+      - \cmd.exe
+      - \wscript.exe
+      - \mshta.exe
+  condition: selection_powershell and selection_flags and (selection_suspicious_context or selection_parent)
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+falsepositives:
+  - Scripts administrativos que usan -noprofile o ejecución sin ventana visible
+  - Herramientas de automatización legítimas
+level: medium
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.t1564
+```
+
+</>
+Detecta el uso de comandos PowerShell codificados o cadenas largas en Base64 en la línea de comandos
 ```
 </> AAT&CK: T1027 - yaml
-title: PowerShell Base64 Long String
-logsource: {product: windows}
+title: Suspicious PowerShell Encoded Command or Long Base64 String
+id: 8f4c2a7d-ps-base64
+status: experimental
+description: Detecta el uso de comandos PowerShell codificados o cadenas largas en Base64 en la línea de comandos
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    CommandLine|re: "[A-Za-z0-9+/]{200,}"
-  condition: selection
+  selection_powershell:
+    Image|endswith:
+      - \powershell.exe
+      - \pwsh.exe
+  selection_encoded_flag:
+    CommandLine|contains:
+      - "-enc"
+      - "-EncodedCommand"
+  selection_base64_pattern:
+    CommandLine|re: "[A-Za-z0-9+/]{150,}={0,2}"
+  selection_additional_context:
+    CommandLine|contains:
+      - "IEX"
+      - "Invoke-Expression"
+      - "FromBase64String"
+      - "DownloadString"
+      - "Invoke-WebRequest"
+  condition: selection_powershell and (selection_encoded_flag or (selection_base64_pattern and selection_additional_context))
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+falsepositives:
+  - Scripts administrativos que utilizan comandos codificados
+  - Herramientas de automatización que pasan datos largos en Base64
+level: high
+tags:
+  - attack.execution
+  - attack.t1027
 ```
 
+</>   
+Detecta ejecuciones de cmd.exe con el parámetro /c junto a patrones comúnmente asociados a actividades maliciosas
 ```
 </> AAT&CK: T1059.003 - yaml
-title: Suspicious Cmd Execution
-logsource: {product: windows}
+title: Suspicious CMD Execution with Potential Malicious Context
+id: d3f9a2b1-cmd-suspicious
+status: experimental
+description: Detecta ejecuciones de cmd.exe con el parámetro /c junto a patrones comúnmente asociados a actividades maliciosas, como ejecución encadenada, descarga de payloads o invocación de herramientas de scripting
+references:
+  - https://attack.mitre.org/techniques/T1059/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    Image|endswith: cmd.exe
+  selection_cmd:
+    Image|endswith: \cmd.exe
+  selection_flag:
     CommandLine|contains: "/c"
-  condition: selection
+  selection_suspicious_commands:
+    CommandLine|contains:
+      - "powershell"
+      - "bitsadmin"
+      - "certutil"
+      - "mshta"
+      - "wscript"
+      - "cscript"
+      - "rundll32"
+  selection_chaining:
+    CommandLine|contains:
+      - "&&"
+      - "|"
+  selection_network_indicators:
+    CommandLine|contains:
+      - "http://"
+      - "https://"
+  selection_parent:
+    ParentImage|endswith:
+      - \winword.exe
+      - \excel.exe
+      - \outlook.exe
+      - \mshta.exe
+      - \wscript.exe
+      - \powershell.exe
+  condition: selection_cmd and selection_flag and (selection_suspicious_commands or selection_network_indicators or selection_chaining or selection_parent)
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+falsepositives:
+  - Scripts administrativos complejos que usan cmd.exe como wrapper
+  - Instaladores de software o herramientas IT
+  - Tareas automatizadas corporativas
+level: medium
+tags:
+  - attack.execution
+  - attack.t1059
 ```
+
 
 ```
 </> AAT&CK: T1218.011 - yaml
