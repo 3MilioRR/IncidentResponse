@@ -1,4 +1,4 @@
-<H1>POWER SHELL 6 EXECUTION</H1>
+<H1>POWER SHELL & EXECUTION</H1>
 
 ### PowerShell & Execution
 
