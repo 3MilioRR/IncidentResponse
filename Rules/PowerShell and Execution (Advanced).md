@@ -2,12 +2,14 @@
 
 ### PowerShell & Execution
 
+
+ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa
 ```
 </> AAT&CK: T1059.001, T1027 - yaml
 title: Suspicious PowerShell Encoded Command Execution
 id: 14r92d-ps-encodedcommand-002
 status: experimental
-description: Detectejecuciónnsospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimineto lateral o evasión de defensa.
+description: Detecta ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa.
 references:
   - https://attack.mitre.org/techniques/T1059/001/
   - https://attack.mitre.org/techniques/T1027/
@@ -75,6 +77,7 @@ falsepositives:
 level: high
 ```
 
+Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
 ```
 </> AAT&CK: T1105 - yaml - 
 title: Suspicious PowerShell DownloadString with Execution
