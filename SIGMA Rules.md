@@ -39,7 +39,7 @@ He repartido las reglas en diferentes categorías atendiendo a los siguientes te
 
 Cada regla está asociada a una (o varias) técnicas de MITRE. La idea es que consultes la técnica que quieras cubrir y averigües qué data source y/o que log registra la actividad que te permita investigar si has recibido ese ataque. De nada sirve la regla si el log no está activo o no se registra actividad.
 
-Recuerda que SIGMA es agnostica de tus herraminetas. Describe el comportamiento del atacante, pero no la implementación específica en un determinado SIEM.
+Recuerda que SIGMA es agnostica de tus herramientas. Describe el comportamiento del atacante, pero no la implementación específica en un determinado SIEM.
 
 
 
