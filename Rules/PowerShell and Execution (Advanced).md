@@ -245,7 +245,7 @@ tags:
 ```
 
 </>   
-
+Detecta uso sospechoso de Invoke-Expression (IEX) en PowerShell
 ```
 </> AAT&CK: T1059.001 - yaml
 title: Suspicious PowerShell Invoke-Expression (IEX) Usage
@@ -296,7 +296,7 @@ tags:
   - attack.t1059.001
 ```
 
-</>
+</>   
 Detecta la ejecución de PowerShell con parámetros de ocultación o evasión como ventanas ocultas
 ```
 </> AAT&CK: T1564, T1059.001 - yaml
@@ -353,7 +353,7 @@ tags:
   - attack.t1564
 ```
 
-</>
+</>   
 Detecta el uso de comandos PowerShell codificados o cadenas largas en Base64 en la línea de comandos
 ```
 </> AAT&CK: T1027 - yaml
@@ -458,26 +458,111 @@ tags:
   - attack.t1059
 ```
 
-
+</>   
+Detecta el uso sospechoso de rundll32.exe para ejecutar contenido remoto o scripts
 ```
 </> AAT&CK: T1218.011 - yaml
-title: Rundll32 Remote Execution
-logsource: {product: windows}
+title: Suspicious Rundll32 Remote or Script Execution
+id: a1c7b3e9-rundll32-remote
+status: experimental
+description: Detecta el uso sospechoso de rundll32.exe para ejecutar contenido remoto o scripts, técnica utilizada frecuentemente para evasión y ejecución de código malicioso
+references:
+  - https://attack.mitre.org/techniques/T1218/011/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    Image|endswith: rundll32.exe
-    CommandLine|contains: "http"
-  condition: selection
+  selection_rundll32:
+    Image|endswith: \rundll32.exe
+  selection_remote:
+    CommandLine|contains:
+      - "http://"
+      - "https://"
+  selection_script_execution:
+    CommandLine|contains:
+      - "javascript:"
+      - "vbscript:"
+      - "mshtml"
+  selection_suspicious_dll:
+    CommandLine|contains:
+      - ".dll,"
+      - ".dll "
+  selection_parent:
+    ParentImage|endswith:
+      - \winword.exe
+      - \excel.exe
+      - \outlook.exe
+      - \mshta.exe
+      - \wscript.exe
+      - \cmd.exe
+      - \powershell.exe
+  condition: selection_rundll32 and (selection_remote or selection_script_execution or (selection_suspicious_dll and selection_parent))
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+falsepositives:
+  - Uso legítimo de rundll32 con DLLs internas del sistema
+  - Scripts administrativos avanzados poco comunes
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.execution
+  - attack.t1218.011
 ```
 
+</>   
+Detecta el uso sospechoso de regsvr32.exe para ejecutar scripts remotos mediante la técnica Squiblydoo
 ```
 </> AAT&CK: T1218.010 - yaml
-title: Regsvr32 Remote Script
-logsource: {product: windows}
+title: Suspicious Regsvr32 Remote Script Execution (Squiblydoo)
+id: e4b2c6f8-regsvr32-remote
+status: experimental
+description: Detecta el uso sospechoso de regsvr32.exe para ejecutar scripts remotos mediante la técnica Squiblydoo, comúnmente utilizada para evasión y ejecución de código sin archivos
+references:
+  - https://attack.mitre.org/techniques/T1218/010/
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    Image|endswith: regsvr32.exe
-    CommandLine|contains: "http"
-  condition: selection
+  selection_regsvr32:
+    Image|endswith: \regsvr32.exe
+  selection_remote:
+    CommandLine|contains:
+      - "http://"
+      - "https://"
+  selection_squiblydoo:
+    CommandLine|contains:
+      - "scrobj.dll"
+      - "/i:"
+  selection_silent_flags:
+    CommandLine|contains:
+      - "/s"
+      - "/u"
+      - "/n"
+  selection_parent:
+    ParentImage|endswith:
+      - \winword.exe
+      - \excel.exe
+      - \outlook.exe
+      - \powershell.exe
+      - \cmd.exe
+      - \mshta.exe
+      - \wscript.exe
+  condition: selection_regsvr32 and selection_remote and (selection_squiblydoo or selection_silent_flags or selection_parent)
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+falsepositives:
+  - Uso legítimo de regsvr32 con scripts remotos internos (muy poco común)
+  - Actividades específicas de administración o testing
+level: high
+tags:
+  - attack.execution
+  - attack.defense_evasion
+  - attack.t1218.010
 ```
 
