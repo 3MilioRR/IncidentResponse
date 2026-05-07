@@ -2,15 +2,41 @@
 
 ### Privilege Escalation & Credential Access
 
+</>   
+Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
 ```
 </> yaml
-title: User Added to Administrators
-logsource: {product: windows}
+title: User Added to Administrators Group
+description: Detecta la adición de un usuario a grupos privilegiados de tipo Administrators (tanto locales como de dominio), lo que podría indicar un intento de escalado de privilegios.
+logsource:
+  product: windows
+  service: security
 detection:
-  selection:
+  selection_domain:
     EventID: 4728
-  condition: selection
+    TargetUserName|contains: Administrators
+  selection_local:
+    EventID: 4732
+    TargetUserName: Administrators
+  filter_machine_accounts:
+    SubjectUserName|endswith: '$'
+  condition: (selection_domain or selection_local) and not filter_machine_accounts
+fields:
+  - SubjectUserName
+  - TargetUserName
+  - MemberName
+  - ComputerName
+falsepositives:
+  - Cambios administrativos legítimos en gestión de usuarios
+  - Automatizaciones de provisión (scripts, herramientas IAM)
+level: medium
+tags:
+  - attack.privilege_escalation
+  - attack.persistence
+  - attack.t1098.007
 ```
+
+</>   
 
 ```
 </> yaml
