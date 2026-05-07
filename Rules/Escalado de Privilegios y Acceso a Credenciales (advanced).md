@@ -156,7 +156,7 @@ tags:
   - attack.t1003
 ```
 
-</>
+</>   
 Detecta el uso de Procdump para volcar la memoria del proceso LSASS
 ```
 </> ATT&CK: T1003 - yaml
@@ -195,56 +195,251 @@ tags:
   - attack.t1003.001
 ```
 
-
+</>    
+Detecta posibles indicadores asociados al uso de Mimikatz u otras herramientas de volcado de credenciales
 ```
-</> ATT&CK: - yaml
-title: Mimikatz Indicators
-logsource: {product: windows}
+</> ATT&CK: T1003 - yaml
+title: Suspicious Mimikatz or Credential Dumping Indicators
+description: Detecta posibles indicadores asociados al uso de Mimikatz u otras herramientas de volcado de credenciales, incluyendo comandos relacionados con sekurlsa y cadenas típicas, lo que puede indicar acceso no autorizado a credenciales en memoria.
+logsource:
+  product: windows
 detection:
-  selection:
+  selection_cmd:
     CommandLine|contains:
-      - mimikatz
-      - sekurlsa
-  condition: selection
+      - 'mimikatz'
+      - 'sekurlsa'
+      - 'logonpasswords'
+      - 'lsadump'
+      - 'wdigest'
+      - 'kerberos::'
+      - 'privilege::debug'
+  selection_tools:
+    Image|endswith:
+      - '\mimikatz.exe'
+  suspicious_parents:
+    ParentImage|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\rundll32.exe'
+  filter_machine_accounts:
+    User|endswith: '$'
+  condition: (selection_cmd or selection_tools) and suspicious_parents and not filter_machine_accounts
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Pruebas de seguridad o red teaming autorizadas
+  - Herramientas de pentesting en entornos controlados
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1003
+  - attack.t1003.001
 ```
 
+</>   
+Detecta intentos de acceso o volcado del hive SAM del registro de Windows
 ```
-</> ATT&CK: - yaml
-title: SAM Hive Access
-logsource: {product: windows}
+</> ATT&CK: T1003- yaml
+title: Suspicious SAM Hive Dumping Activity
+description: Detecta intentos de acceso o volcado del hive SAM del registro de Windows mediante herramientas o comandos habituales, lo que puede indicar intento de obtención de credenciales locales.
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "SAM"
-  condition: selection
+  selection_reg_save:
+    CommandLine|contains|all:
+      - 'reg'
+      - 'save'
+      - 'SAM'
+  selection_copy:
+    CommandLine|contains|all:
+      - 'copy'
+      - 'SAM'
+  selection_ntdsutil:
+    CommandLine|contains|all:
+      - 'ntdsutil'
+      - 'activate instance'
+  selection_esentutl:
+    CommandLine|contains|all:
+      - 'esentutl'
+      - '/y'
+      - 'SAM'
+  filter_legitimate_paths:
+    CommandLine|contains:
+      - 'C:\Windows\System32\config\SAM'
+  filter_machine_accounts:
+    User|endswith: '$'
+  condition: (selection_reg_save or selection_copy or selection_ntdsutil or selection_esentutl) 
+             and not filter_machine_accounts
+fields:
+  - Image
+  - CommandLine
+  - User
+  - ParentImage
+  - ComputerName
+falsepositives:
+  - Administradores realizando backups manuales del registro
+  - Herramientas de backup legítimas
+  - Procesos de recuperación del sistema
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1003
+  - attack.t1003.002
 ```
 
+</>
+Detecta el uso de herramientas y comandos comunes para realizar volcados de memoria del proceso LSASS
 ```
-</> ATT&CK: - yaml
-title: LSASS Memory Dump
-logsource: {product: windows}
+</> ATT&CK: T1003 - yaml
+title: Suspicious LSASS Memory Dump via Command Line Tools
+description: Detecta el uso de herramientas y comandos comunes para realizar volcados de memoria del proceso LSASS, lo que puede indicar intento de robo de credenciales en el sistema.
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "lsass"
-  condition: selection
+  selection_procdump:
+    CommandLine|contains|all:
+      - 'procdump'
+      - 'lsass'
+  selection_rundll32:
+    CommandLine|contains|all:
+      - 'rundll32'
+      - 'comsvcs.dll'
+      - 'MiniDump'
+  selection_taskmgr:
+    CommandLine|contains|all:
+      - 'taskmgr'
+      - 'lsass'
+  selection_powershell:
+    CommandLine|contains|all:
+      - 'powershell'
+      - 'lsass'
+  filter_machine_accounts:
+    User|endswith: '$'
+  condition: (selection_procdump or selection_rundll32 or selection_taskmgr or selection_powershell)
+             and not filter_machine_accounts
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Actividades legítimas de troubleshooting o debugging
+  - Uso de herramientas de administración por equipos IT
+  - Soluciones EDR realizando análisis de memoria
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1003
+  - attack.t1003.001
 ```
 
+</>
+Detecta el uso de privilegios sensibles asociados a la manipulación de tokens o elevación de privilegios
 ```
-</> ATT&CK: - yaml
-title: Suspicious Token Manipulation
-logsource: {product: windows}
+</> ATT&CK: T1134 - yaml
+title: Suspicious Sensitive Privilege Use (Token Manipulation)
+description: Detecta el uso de privilegios sensibles asociados a la manipulación de tokens o elevación de privilegios (como SeDebugPrivilege o SeImpersonatePrivilege) por cuentas no habituales, lo que puede indicar intento de escalado de privilegios o abuso de credenciales.
+logsource:
+  product: windows
+  service: security
 detection:
   selection:
     EventID: 4673
-  condition: selection
+  sensitive_privileges:
+    PrivilegeList|contains:
+      - SeDebugPrivilege
+      - SeImpersonatePrivilege
+      - SeAssignPrimaryTokenPrivilege
+      - SeTcbPrivilege
+  filter_builtin_accounts:
+    SubjectUserName:
+      - SYSTEM
+      - LOCAL SERVICE
+      - NETWORK SERVICE
+  filter_machine_accounts:
+    SubjectUserName|endswith: '$'
+  filter_legitimate_processes:
+    ProcessName|endswith:
+      - '\lsass.exe'
+      - '\services.exe'
+      - '\wininit.exe'
+      - '\svchost.exe'
+  condition: selection and sensitive_privileges and not (filter_builtin_accounts or filter_machine_accounts or filter_legitimate_processes)
+fields:
+  - SubjectUserName
+  - ProcessName
+  - PrivilegeList
+  - ComputerName
+falsepositives:
+  - Procesos administrativos legítimos
+  - Herramientas de gestión IT
+  - Software de seguridad (EDR/AV)
+level: medium
+tags:
+  - attack.privilege_escalation
+  - attack.credential_access
+  - attack.t1134
 ```
 
+</>
+Detecta la enumeración de grupos privilegiados mediante comandos
 ```
-</> ATT&CK: - yaml
-title: Privileged Group Enumeration
-logsource: {product: windows}
+</> ATT&CK: T1069 - yaml
+title: Suspicious Enumeration of Privileged Groups
+description: Detecta la enumeración de grupos privilegiados mediante comandos como "net group" o "net localgroup", especialmente cuando se enfocan en grupos administrativos, lo que puede indicar reconocimiento previo a un escalado de privilegios.
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "net group"
-  condition: selection
+  selection_domain:
+    CommandLine|contains|all:
+      - 'net group'
+      - 'admin'
+  selection_local:
+    CommandLine|contains|all:
+      - 'net localgroup'
+      - 'Administrators'
+  selection_sensitive_groups:
+    CommandLine|contains:
+      - 'Domain Admins'
+      - 'Enterprise Admins'
+      - 'Administrators'
+      - 'Remote Desktop Users'
+  suspicious_parents:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+  filter_machine_accounts:
+    User|endswith: '$'
+  filter_admin_users:
+    User|contains:
+      - admin
+      - administrador
+  condition: (selection_domain or selection_local or selection_sensitive_groups)
+             and suspicious_parents
+             and not (filter_machine_accounts or filter_admin_users)
+fields:
+  - User
+  - CommandLine
+  - ParentImage
+  - ComputerName
+falsepositives:
+  - Administradores realizando tareas de gestión
+  - Scripts de inventario o auditoría
+  - Herramientas IT legítimas
+level: low
+tags:
+  - attack.discovery
+  - attack.t1069
+  - attack.t1069.001
+  - attack.t1069.002
 ```
 
