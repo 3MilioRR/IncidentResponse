@@ -77,7 +77,7 @@ falsepositives:
 level: high
 ```
 
-
+<br>
 </> Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
 ```
 </> AAT&CK: T1105 - yaml - 
