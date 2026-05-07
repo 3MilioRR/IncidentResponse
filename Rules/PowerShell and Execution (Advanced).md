@@ -77,7 +77,6 @@ falsepositives:
   - Internal automation using encoded PowerShell
 level: high
 ```
-
    
 </>   
 Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
@@ -132,15 +131,61 @@ falsepositives:
 level: high
 ``` 
 
+
+</>  
+Detecta potencial uso sospechoso de Invoke-WebRequest en PowerShell, comunmente usado para descargar payloads
 ```
-</> AAT&CK: T1105 - yaml
-title: PowerShell Invoke-WebRequest
-logsource: {product: windows}
+</> AAT&CK: T1105 - yaml -
+title: Suspicious PowerShell Invoke-WebRequest Usage
+id: 3c8b9d6a-ps-iwr-suspicious
+status: experimental
+description: Detecta potencial uso sospechoso de Invoke-WebRequest en PowerShell, comunmente usado para descargar payloads
+references:
+  - https://attack.mitre.org/techniques/T1105/
+author: Emilio Rico Ruiz (optimized)
+date: 2026/05/07
+logsource:
+  product: windows
+  category: process_creation
 detection:
-  selection:
-    CommandLine|contains: "Invoke-WebRequest"
-  condition: selection
+  selection_cmdlet:
+    CommandLine|contains:
+      - Invoke-WebRequest
+      - iwr
+  selection_suspicious_flags:
+    CommandLine|contains:
+      - "-Uri http"
+      - "-OutFile"
+      - "-UseBasicParsing"
+  selection_parent:
+    ParentImage|endswith:
+      - \cmd.exe
+      - \powershell.exe
+      - \wscript.exe
+      - \mshta.exe
+  selection_http:
+    CommandLine|contains:
+      - "http://"
+      - "https://"
+  filter_known_good:
+    Image|endswith:
+      - \MicrosoftEdgeUpdate.exe
+      - \OneDrive.exe
+  condition: selection_cmdlet and selection_http and (selection_suspicious_flags or selection_parent) and not filter_known_good
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+falsepositives:
+  - Administrative scripts using Invoke-WebRequest
+  - Software updates or deployment scripts
+level: medium
+tags:
+  - attack.command_and_control
+  - attack.t1105
 ```
+
+
 
 ```
 </> AAT&CK: T1204 - yaml
