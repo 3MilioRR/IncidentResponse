@@ -16,12 +16,14 @@ detection:
   condition: selection
 ```
 
-¿que inidica esté pseudo-código? Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
+¿que indica esté pseudo-código? Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
+
+Pero esta regla es solo un ejemplo. Es demasiado sencilla y si la pones en producción generará mucho ruido pero poca utilidad.
+
+A continuación tienes un set de ***50 reglas Sigma*** listas para usar como base. Las tienes en versión 'basic' (simplificadas pero funcionales) y versión 'advanced' (optimizadas para usar).
 
 
 ## 50 reglas sigma
-A continuación tienes un set de ***50 reglas Sigma*** listas para usar como base. Las tienes en versión 'basic' (simplificadas pero funcionales) y versión 'advanced' (optimizadas para usar).
-
 He repartido las reglas en diferentes categorías atendiendo a los siguientes temas:
 
 - :clipboard: [Power Shell Execution](#powershell--execution)
