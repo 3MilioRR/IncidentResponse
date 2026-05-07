@@ -3,7 +3,7 @@
 ### PowerShell & Execution
 
 
-ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa
+</> Ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa
 ```
 </> AAT&CK: T1059.001, T1027 - yaml
 title: Suspicious PowerShell Encoded Command Execution
@@ -77,7 +77,8 @@ falsepositives:
 level: high
 ```
 
-Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
+
+</> Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
 ```
 </> AAT&CK: T1105 - yaml - 
 title: Suspicious PowerShell DownloadString with Execution
