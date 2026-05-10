@@ -3,7 +3,7 @@ Las reglas SIGMA son plantillas genéricas para detectar actividad sospechosa en
 
 :triangular_flag_on_post: Piensa en ellas como: “Si pasa esto en los logs → puede ser un ataque”
 
-No están ligadas a una herramienta concreta, para que funciones es necesario convertirlas al formato específico de la herramienta que utilices (Splunk, Elastic, Sentinel, etc.).
+No están ligadas a una herramienta concreta, así que para que funcionen es necesario convertirlas al formato específico de la herramienta que utilices (Splunk, Elastic, Sentinel, etc.). No te preocupes, te digo donde puedes hacerlo de forma más o menos automática.
 
 Ejemplo sencillo (fichero YAML)
 
@@ -16,11 +16,11 @@ detection:
   condition: selection
 ```
 
-¿que indica esté pseudo-código? Traducción: Si alguien usa PowerShell para descargar cosas → sospechoso
+¿que indica esté pseudo-código? Traducción: Si alguien usa PowerShell para descargar cosas → sospecha, eso no es normal.
 
-Pero esta regla es solo un ejemplo. Es demasiado sencilla y si la pones en producción generará mucho ruido pero poca utilidad.
+Esta regla es solo un ejemplo, pero no es válida porque es demasiado sencilla. Si la pusieras en producción generaría mucho ruido y te sería de poca utilidad.
 
-A continuación tienes un set de ***50 reglas Sigma*** listas para usar como base. Las tienes en versión 'basic' (simplificadas pero funcionales) y versión 'advanced' (optimizadas para usar).
+A continuación tienes un set de ***50 reglas Sigma*** listas para usar como base. 
 
 
 ## 50 reglas sigma
@@ -33,6 +33,7 @@ He repartido las reglas en diferentes categorías atendiendo a los siguientes te
 - :goal_net: Exfiltracion e Impacto [(Basic)](Rules/Exfiltracion%20e%20Impacto.md)
 
 ⚠️ Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como una base de partida.
+Las tienes en una versión 'casi' listas para usar en producción. Pero fíjate que digo 'casi'. Lo más probable es que aún tengas que alinearlas con tu infraestructura y tus herramientas.
 
 
 ## Importante
