@@ -2,41 +2,57 @@
 
 ### Exfiltration & Impact
 
+
+1️⃣    
+</> Detecta la creación de archivos comprimidos (ZIP, RAR, 7Z) mediante herramientas comunes
 ```
-</> ATT&CK:  - yaml
-title: Suspicious Archive Creation for Potential Exfiltration
+</> ATT&CK: T1560, T1041  - yaml
+title: Suspicious Archive Creation for Exfiltration Preparation
+id: b7a7c9c2-8f2e-4d3b-9e2c-archive-exfil-001
+status: experimental
+description: >
+  Detecta la creación de archivos comprimidos (ZIP, RAR, 7Z) mediante herramientas comúnmente utilizadas en escenarios de ataque, como 7-Zip, WinRAR o PowerShell. Técnicas MITRE ATT&CK: MITRE ATT&CK: T1560 (Archive Collected Data), T1041 (Exfiltration Over C2 Channel)
+references:
+  - https://attack.mitre.org/techniques/T1560/
+  - https://attack.mitre.org/techniques/T1041/
+tags:
+  - attack.exfiltration
+  - attack.collection
+  - attack.t1560
+  - attack.t1041
 logsource:
   product: windows
 detection:
-  selection_cmd:
-    CommandLine|contains:
-      - ".zip"
-      - ".rar"
-      - ".7z"
   selection_tools:
     Image|endswith:
-      - "\7z.exe"
-      - "\7za.exe"
-      - "\rar.exe"
-      - "\winrar.exe"
-      - "\powershell.exe"
-  selection_ps:
+      - '\7z.exe'
+      - '\7za.exe'
+      - '\rar.exe'
+      - '\winrar.exe'
+  selection_cmd:
     CommandLine|contains:
-      - "Compress-Archive"
-  condition: (selection_cmd and selection_tools) or selection_ps
+      - '.zip'
+      - '.rar'
+      - '.7z'
+  selection_ps:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains: 'Compress-Archive'
+  condition: (selection_tools and selection_cmd) or selection_ps
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
 falsepositives:
-  - Actividad legítima de usuarios creando archivos comprimidos
-  - Scripts administrativos o backups automatizados
+  - Uso legítimo de herramientas de compresión por usuarios o administradores
+  - Procesos automatizados de backup o empaquetado de logs
+  - Instaladores de software que generan archivos comprimidos
 level: medium
-description: >
-  Detecta la creación de archivos comprimidos (ZIP, RAR, 7Z) mediante herramientas comunes o PowerShell.
-  Esta actividad puede estar relacionada con la recopilación y preparación de datos para su exfiltración,
-  especialmente si se realiza desde rutas sensibles o fuera de procesos habituales.
-  Técnicas MITRE ATT&CK: T1560 (Archive Collected Data), T1041 (Exfiltration Over C2 Channel)
-
 ```
 
-```
+2️⃣    
+</> 
+```    
 </> ATT&CK:  - yaml
 title: 7zip Usage
 logsource: {product: windows}
