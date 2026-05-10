@@ -154,7 +154,7 @@ falsepositives:
 level: high
 ```
 
-:five:   
+5️⃣   
 </> Detecta la creación de suscripciones persistentes de WMI (Windows Management Instrumentation)
 ```
 </> ATT&CK: T1546.003 - yaml
@@ -197,54 +197,285 @@ falsepositives:
 level: high
 ```
 
+6️⃣    
+</> Detecta la creación o modificación de archivos en las carpetas de inicio automático de Windows (Startup Folder)
 ```
-</> ATT&CK:  - yaml
+</> ATT&CK: T1547.001 - yaml
 title: Startup Folder Modification
-logsource: {product: windows}
+description: Detecta la creación o modificación de archivos en las carpetas de inicio automático de Windows (Startup Folder). La regla se enfoca en ubicaciones específicas de inicio y excluye rutas y procesos legítimos habituales para reducir falsos positivos. Relacionado con MITRE ATT&CK T1547.001 (Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder).
+logsource:
+  product: windows
 detection:
-  selection:
-    TargetFilename|contains: "Startup"
-  condition: selection
+  selection_paths:
+    TargetFilename|contains:
+      - '\Microsoft\Windows\Start Menu\Programs\Startup\'
+      - '\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\'
+  selection_suspicious_ext:
+    TargetFilename|endswith:
+      - '.exe'
+      - '.bat'
+      - '.cmd'
+      - '.ps1'
+      - '.lnk'
+      - '.vbs'
+  filter_legitimate_process:
+    Image|endswith:
+      - '\explorer.exe'
+      - '\msiexec.exe'
+      - '\setup.exe'
+      - '\install.exe'
+  filter_known_vendors:
+    TargetFilename|contains:
+      - 'OneDrive'
+      - 'Teams'
+      - 'Microsoft'
+      - 'Google'
+      - 'Adobe'
+  condition: selection_paths
+             and selection_suspicious_ext
+             and not (filter_legitimate_process or filter_known_vendors)
+fields:
+  - TargetFilename
+  - Image
+  - User
+falsepositives:
+  - Instalación o actualización de software legítimo
+  - Scripts corporativos de login
+  - Herramientas de despliegue IT
+level: high
 ```
 
+7️⃣   
+</> Detecta la ejecución de bibliotecas DLL desde directorios temporales de Windows
 ```
-</> ATT&CK:  - yaml
+</> ATT&CK: T1574.001 - yaml
 title: DLL in Temp Execution
-logsource: {product: windows}
+description: Detecta la ejecución de bibliotecas DLL desde directorios temporales de Windows. Este es un comportamiento poco habitual en software legítimo y comúnmente asociado a técnicas de evasión y persistencia empleadas por malware. La regla se centra en procesos que cargan DLL desde rutas temporales y excluye casos conocidos para reducir falsos positivos. Relacionado con MITRE ATT&CK T1574.001 (Hijack Execution Flow: DLL Search Order Hijacking).
+logsource:
+  product: windows
 detection:
-  selection:
-    Image|contains: ".dll"
-    CommandLine|contains: "Temp"
-  condition: selection
+  selection_dll_execution:
+    CommandLine|contains:
+      - '.dll'
+  selection_temp_paths:
+    CommandLine|contains:
+      - '\Temp\'
+      - '\AppData\Local\Temp\'
+      - '\Windows\Temp\'
+  selection_suspicious_parent:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\rundll32.exe'
+  filter_legitimate:
+    Image|endswith:
+      - '\msiexec.exe'
+      - '\setup.exe'
+      - '\install.exe'
+  filter_known_patterns:
+    CommandLine|contains:
+      - 'Windows\\Installer'
+      - 'Package Cache'
+  condition: selection_dll_execution
+             and selection_temp_paths
+             and selection_suspicious_parent
+             and not (filter_legitimate or filter_known_patterns)
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+falsepositives:
+  - Instaladores legítimos ejecutando DLL temporalmente
+  - Herramientas de despliegue (SCCM, Intune)
+  - Scripts administrativos avanzados
+level: high
 ```
 
+8️⃣    
+</> Detecta la modificación o creación de entradas en la clave de registro RunOnce de Windows
 ```
-</> ATT&CK:  - yaml
+</> ATT&CK: T1547.001 - yaml
 title: Autorun Registry Modification
-logsource: {product: windows}
+description: Detecta la modificación o creación de entradas en la clave de registro RunOnce de Windows, utilizada para ejecutar programas automáticamente en el próximo inicio de sesión. Esta técnica es utilizada por software legítimo así que deberían incluirse filtros y rutas para mejorar la precisión. Relacionado con MITRE ATT&CK T1547.001 (Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder).
+logsource:
+  product: windows
 detection:
-  selection:
-    TargetObject|contains: "RunOnce"
-  condition: selection
+  selection_key:
+    TargetObject|contains:
+      - '\Software\Microsoft\Windows\CurrentVersion\RunOnce'
+      - '\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\RunOnce'
+  selection_suspicious_paths:
+    Details|contains:
+      - '\AppData\'
+      - '\Temp\'
+      - '\Users\Public\'
+      - '\ProgramData\'
+  filter_legitimate_installers:
+    Image|endswith:
+      - '\msiexec.exe'
+      - '\setup.exe'
+      - '\install.exe'
+  filter_known_vendors:
+    Details|contains:
+      - 'Microsoft'
+      - 'Windows Defender'
+      - 'OneDrive'
+      - 'Google'
+      - 'Adobe'
+      - 'Teams'
+  filter_system_context:
+    User|contains:
+      - 'NT AUTHORITY\\SYSTEM'
+  condition: selection_key
+             and selection_suspicious_paths
+             and not (filter_legitimate_installers or filter_known_vendors or filter_system_context)
+fields:
+  - TargetObject
+  - Details
+  - Image
+  - User
+falsepositives:
+  - Instalaciones legítimas de software
+  - Actualizaciones automáticas
+  - Scripts internos de IT
+level: high
 ```
 
+9️⃣    
+</> Detecta modificaciones en servicios de Windows mediante el evento 7040,
 ```
-</> ATT&CK:  - yaml
+</> ATT&CK: T1562.001 - yaml
 title: Service Modification
-logsource: {product: windows}
+description: Detecta modificaciones en servicios de Windows mediante el evento 7040, incluyendo cambios a inicio automático (persistencia) y deshabilitación de servicios de seguridad. La detección combina múltiples indicadores como rutas sospechosas, binarios no firmados y nombres de servicios críticos para reducir falsos positivos. Relacionado con MITRE ATT&CK T1543.003 (Create or Modify System Process: Windows Service) y T1562.001 (Impair Defenses: Disable or Modify Tools).
+logsource:
+  product: windows
 detection:
-  selection:
+  selection_event:
     EventID: 7040
-  condition: selection
+  selection_persistence:
+    StartType:
+      - 'Auto Start'
+      - 'Automatic'
+      - 'Boot'
+  selection_disabled:
+    StartType:
+      - 'Disabled'
+  selection_security_services:
+    ServiceName|contains:
+      - 'Defender'
+      - 'Sense'
+      - 'WdNisSvc'
+      - 'WinDefend'
+      - 'SecurityHealth'
+      - 'MpsSvc'           # Windows Firewall
+      - 'wscsvc'           # Security Center
+      - 'Sophos'
+      - 'CrowdStrike'
+      - 'Sentinel'
+      - 'CarbonBlack'
+      - 'McAfee'
+      - 'Trend'
+      - 'ESET'
+  selection_suspicious_paths:
+    ImagePath|contains:
+      - '\AppData\'
+      - '\Temp\'
+      - '\Users\Public\'
+      - '\ProgramData\'
+  selection_unsigned:
+    Signed: 'false'
+    SignatureStatus:
+      - 'Invalid'
+      - 'Unknown'
+  filter_legitimate_services:
+    ServiceName|contains:
+      - 'Windows Update'
+      - 'TrustedInstaller'
+  filter_standard_paths:
+    ImagePath|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Program Files\'
+      - 'C:\Program Files (x86)\'
+  condition: selection_event and (
+                (selection_persistence and (selection_suspicious_paths or selection_unsigned))
+                or
+                (selection_disabled and selection_security_services)
+             )
+             and not (filter_legitimate_services or filter_standard_paths)
+fields:
+  - ServiceName
+  - ImagePath
+  - StartType
+  - User
+  - Signed
+  - SignatureStatus
+falsepositives:
+  - Cambios administrativos en servicios
+  - Desactivación controlada de herramientas de seguridad
+  - Actualizaciones o mantenimiento de sistemas
+level: high
 ```
 
+:one:0️⃣    
+</> Detecta la creación de tareas programadas en Windows que hacen referencia a binarios ubicados en rutas sospechosas
 ```
-</> ATT&CK:  - yaml
+</> ATT&CK: T1053.005 - yaml
 title: Suspicious Scheduled Task Path
-logsource: {product: windows}
+description: Detecta la creación de tareas programadas en Windows que hacen referencia a binarios ubicados en rutas sospechosas como AppData. La regla se centra en tareas creadas mediante herramientas típicas y excluye casos legítimos conocidos para mejorar la precisión. Relacionado con MITRE ATT&CK T1053.005 (Scheduled Task/Job: Scheduled Task).
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "AppData"
-  condition: selection
+  selection_task_creation:
+    Image|endswith:
+      - '\schtasks.exe'
+      - '\powershell.exe'
+      - '\cmd.exe'
+  selection_creation_flag:
+    CommandLine|contains:
+      - '/create'
+      - 'New-ScheduledTask'
+      - 'Register-ScheduledTask'
+  selection_suspicious_paths:
+    CommandLine|contains:
+      - '\AppData\'
+      - '\Temp\'
+      - '\Users\Public\'
+      - '\ProgramData\'
+  selection_suspicious_ext:
+    CommandLine|contains:
+      - '.exe'
+      - '.ps1'
+      - '.bat'
+      - '.cmd'
+      - '.vbs'
+  filter_legitimate:
+    CommandLine|contains:
+      - '\Microsoft\Windows\'
+      - 'OneDrive'
+      - 'GoogleUpdate'
+      - 'Adobe'
+      - 'Teams'
+  filter_installers:
+    Image|endswith:
+      - '\msiexec.exe'
+      - '\setup.exe'
+      - '\install.exe'
+  condition: selection_task_creation
+             and selection_creation_flag
+             and selection_suspicious_paths
+             and selection_suspicious_ext
+             and not (filter_legitimate or filter_installers)
+fields:
+  - Image
+  - CommandLine
+  - User
+falsepositives:
+  - Instalaciones de software legítimo
+  - Scripts administrativos corporativos
+  - Herramientas de despliegue IT (SCCM, Intune)
+level: high
 ```
 
