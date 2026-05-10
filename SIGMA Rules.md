@@ -26,11 +26,11 @@ A continuación tienes un set de ***50 reglas Sigma*** listas para usar como bas
 ## 50 reglas sigma
 He repartido las reglas en diferentes categorías atendiendo a los siguientes temas:
 
-- :clipboard: [Power Shell Execution](#powershell--execution)
+- :clipboard: [Power Shell Execution](Rules/powershell%20execution.md)
 - :anchor: [Persistence](Rules/Persistencia.md)
 - :ticket: [Privilege Escalation & Credential Access](Rules/Escalado%20de%20Privilegios%20y%20Acceso%20a%20Credenciales.md)
 - :ladder: [Lateral Movement & Discovery](Rules/Movimiento%20Lateral%20y%20descubrimiento.md)
-- :goal_net: Exfiltracion e Impacto [(Basic)](Rules/Exfiltracion%20e%20Impacto.md)
+- :goal_net: [Exfiltracion e Impacto](Rules/Exfiltracion%20e%20Impacto.md)
 
 ⚠️ Están optimizadas para claridad y uso práctico. Aunque cubren muchas casuísticas, no esperes que cubran el 100% de tus necesidades. Úsalas como una base de partida.
 Las tienes en una versión 'casi' listas para usar en producción. Pero fíjate que digo 'casi'. Lo más probable es que aún tengas que alinearlas con tu infraestructura y tus herramientas.
