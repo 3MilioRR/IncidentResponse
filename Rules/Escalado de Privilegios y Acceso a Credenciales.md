@@ -388,7 +388,7 @@ tags:
   - attack.t1134
 ```
 
-1️⃣2️⃣    
+1️⃣0️⃣      
 </> Detecta la enumeración de grupos privilegiados mediante comandos
 ```
 </> ATT&CK: T1069 - yaml
