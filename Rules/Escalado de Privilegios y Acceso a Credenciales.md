@@ -2,8 +2,8 @@
 
 ### Privilege Escalation & Credential Access
 
-</>   
-Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
+:one:   
+</> Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
 ```
 </> AAT&CK: T1098.007 - yaml
 title: User Added to Administrators Group
@@ -36,8 +36,8 @@ tags:
   - attack.t1098.007
 ```
 
-</>   
-Detecta la asignación de privilegios especiales (SeDebug, SeTcb, etc.) a cuentas no habituales
+:two:    
+</> Detecta la asignación de privilegios especiales (SeDebug, SeTcb, etc.) a cuentas no habituales
 ```
 </> ATT&CK: T1078 - yaml
 title: Special Privileges Assigned to Non-Standard Account
@@ -76,8 +76,8 @@ tags:
   - attack.t1078
 ```
 
-</>   
-Detecta el uso de la utilidad RunAs para ejecutar procesos bajo otro contexto de usuario
+3️⃣    
+</> Detecta el uso de la utilidad RunAs para ejecutar procesos bajo otro contexto de usuario
 ```
 </> ATT&CK: T1548 - yaml
 title: Suspicious RunAs Execution by Non-Privileged User
@@ -113,8 +113,8 @@ tags:
   - attack.t1548
 ```
 
-</>   
-Detecta accesos sospechosos al proceso LSASS, que pueden indicar intentos de volcado de credenciales 
+4️⃣    
+</> Detecta accesos sospechosos al proceso LSASS, que pueden indicar intentos de volcado de credenciales 
 ```
 </> ATT&CK: T1003- yaml
 title: Suspicious Access to LSASS Process
@@ -156,8 +156,8 @@ tags:
   - attack.t1003
 ```
 
-</>   
-Detecta el uso de Procdump para volcar la memoria del proceso LSASS
+5️⃣   
+</> Detecta el uso de Procdump para volcar la memoria del proceso LSASS
 ```
 </> ATT&CK: T1003 - yaml
 title: LSASS Credential Dumping via Procdump
@@ -195,8 +195,8 @@ tags:
   - attack.t1003.001
 ```
 
-</>    
-Detecta posibles indicadores asociados al uso de Mimikatz u otras herramientas de volcado de credenciales
+6️⃣    
+</> Detecta posibles indicadores asociados al uso de Mimikatz u otras herramientas de volcado de credenciales
 ```
 </> ATT&CK: T1003 - yaml
 title: Suspicious Mimikatz or Credential Dumping Indicators
@@ -242,8 +242,8 @@ tags:
   - attack.t1003.001
 ```
 
-</>   
-Detecta intentos de acceso o volcado del hive SAM del registro de Windows
+7️⃣    
+</> Detecta intentos de acceso o volcado del hive SAM del registro de Windows
 ```
 </> ATT&CK: T1003- yaml
 title: Suspicious SAM Hive Dumping Activity
@@ -293,8 +293,8 @@ tags:
   - attack.t1003.002
 ```
 
-</>    
-Detecta el uso de herramientas y comandos comunes para realizar volcados de memoria del proceso LSASS
+8️⃣    
+</> Detecta el uso de herramientas y comandos comunes para realizar volcados de memoria del proceso LSASS
 ```
 </> ATT&CK: T1003 - yaml
 title: Suspicious LSASS Memory Dump via Command Line Tools
@@ -340,8 +340,8 @@ tags:
   - attack.t1003.001
 ```
 
-</>    
-Detecta el uso de privilegios sensibles asociados a la manipulación de tokens o elevación de privilegios
+9️⃣    
+</> Detecta el uso de privilegios sensibles asociados a la manipulación de tokens o elevación de privilegios
 ```
 </> ATT&CK: T1134 - yaml
 title: Suspicious Sensitive Privilege Use (Token Manipulation)
@@ -388,8 +388,8 @@ tags:
   - attack.t1134
 ```
 
-</>    
-Detecta la enumeración de grupos privilegiados mediante comandos
+1️⃣2️⃣    
+</> Detecta la enumeración de grupos privilegiados mediante comandos
 ```
 </> ATT&CK: T1069 - yaml
 title: Suspicious Enumeration of Privileged Groups
