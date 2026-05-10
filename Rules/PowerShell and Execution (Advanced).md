@@ -3,8 +3,8 @@
 ### PowerShell & Execution
 
 
-</>   
-Ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa
+:one:   
+</> Ejecución sospechosa de PowerShell usando comandos codificados junto con patrones asociados con malware, movimiento lateral o evasión de defensa
 ```
 </> AAT&CK: T1059.001, T1027 - yaml
 title: Suspicious PowerShell Encoded Command Execution
