@@ -26,7 +26,7 @@ A continuación tienes un set de ***50 reglas Sigma*** listas para usar como bas
 ## 50 reglas sigma
 He repartido las reglas en diferentes categorías atendiendo a los siguientes temas:
 
-- :clipboard: [Power Shell Execution](Rules/powershell%20execution.md)
+- :clipboard: [Power Shell Execution](Rules/PowerShell%20and%20Execution.md)
 - :anchor: [Persistence](Rules/Persistencia.md)
 - :ticket: [Privilege Escalation & Credential Access](Rules/Escalado%20de%20Privilegios%20y%20Acceso%20a%20Credenciales.md)
 - :ladder: [Lateral Movement & Discovery](Rules/Movimiento%20Lateral%20y%20descubrimiento.md)
