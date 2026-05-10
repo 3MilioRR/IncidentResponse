@@ -78,8 +78,8 @@ falsepositives:
 level: high
 ```
    
-</>   
-Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
+:two:    
+</> Detecta uso sospechoso de DownloadString en PowerShell combinado con la ejecución de patrones comunmente asociados con entrega de malware y/o ataques fileless.
 ```
 </> AAT&CK: T1105 - yaml - 
 title: Suspicious PowerShell DownloadString with Execution
@@ -132,8 +132,8 @@ level: high
 ``` 
 
 
-</>  
-Detecta potencial uso sospechoso de Invoke-WebRequest en PowerShell, comunmente usado para descargar payloads
+3️⃣   
+</> Detecta potencial uso sospechoso de Invoke-WebRequest en PowerShell, comunmente usado para descargar payloads
 ```
 </> AAT&CK: T1105 - yaml -
 title: Suspicious PowerShell Invoke-WebRequest Usage
@@ -186,8 +186,8 @@ tags:
 ```
 
 
-</>  
-Detecta ejecucionn sospechosa de PowerShell desde aplicaciones Microsoft Offices, comunmente asociadas al uso de macros
+4️⃣    
+</> Detecta ejecucionn sospechosa de PowerShell desde aplicaciones Microsoft Offices, comunmente asociadas al uso de macros
 ```
 </> AAT&CK: T1204, T1059.001 - yaml
 title: Suspicious PowerShell Spawned by Office Applications
@@ -244,8 +244,8 @@ tags:
 ``
 ```
 
-</>   
-Detecta uso sospechoso de Invoke-Expression (IEX) en PowerShell
+:five:    
+</> Detecta uso sospechoso de Invoke-Expression (IEX) en PowerShell
 ```
 </> AAT&CK: T1059.001 - yaml
 title: Suspicious PowerShell Invoke-Expression (IEX) Usage
@@ -296,8 +296,8 @@ tags:
   - attack.t1059.001
 ```
 
-</>   
-Detecta la ejecución de PowerShell con parámetros de ocultación o evasión como ventanas ocultas
+6️⃣    
+</> Detecta la ejecución de PowerShell con parámetros de ocultación o evasión como ventanas ocultas
 ```
 </> AAT&CK: T1564, T1059.001 - yaml
 title: PowerShell Hidden or Silent Execution Flags
@@ -353,8 +353,8 @@ tags:
   - attack.t1564
 ```
 
-</>   
-Detecta el uso de comandos PowerShell codificados o cadenas largas en Base64 en la línea de comandos
+:seven:     
+</> Detecta el uso de comandos PowerShell codificados o cadenas largas en Base64 en la línea de comandos
 ```
 </> AAT&CK: T1027 - yaml
 title: Suspicious PowerShell Encoded Command or Long Base64 String
@@ -399,8 +399,8 @@ tags:
   - attack.t1027
 ```
 
-</>   
-Detecta ejecuciones de cmd.exe con el parámetro /c junto a patrones comúnmente asociados a actividades maliciosas
+8️⃣    
+</> Detecta ejecuciones de cmd.exe con el parámetro /c junto a patrones comúnmente asociados a actividades maliciosas
 ```
 </> AAT&CK: T1059.003 - yaml
 title: Suspicious CMD Execution with Potential Malicious Context
@@ -458,8 +458,8 @@ tags:
   - attack.t1059
 ```
 
-</>   
-Detecta el uso sospechoso de rundll32.exe para ejecutar contenido remoto o scripts
+9️⃣    
+</> Detecta el uso sospechoso de rundll32.exe para ejecutar contenido remoto o scripts
 ```
 </> AAT&CK: T1218.011 - yaml
 title: Suspicious Rundll32 Remote or Script Execution
@@ -512,8 +512,8 @@ tags:
   - attack.t1218.011
 ```
 
-</>   
-Detecta el uso sospechoso de regsvr32.exe para ejecutar scripts remotos mediante la técnica Squiblydoo
+:one:0️⃣    
+</> Detecta el uso sospechoso de regsvr32.exe para ejecutar scripts remotos mediante la técnica Squiblydoo
 ```
 </> AAT&CK: T1218.010 - yaml
 title: Suspicious Regsvr32 Remote Script Execution (Squiblydoo)
