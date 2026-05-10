@@ -291,53 +291,267 @@ falsepositives:
 level: medium
 ```
 
-6️⃣
+6️⃣   
+</>
 ```
-</> ATT&CK:  - yaml
-title: Delete Shadow Copies
-logsource: {product: windows}
+</> ATT&CK: T1490, T1486 - yaml
+title: Shadow Copy Deletion via VSSAdmin Indicative of Impact Activity
+id: c4a8d1e9-7b2e-4f6b-91d3-vssadmin-delete-008
+status: experimental
+description: Detecta la eliminación de shadow copies (Volume Shadow Copies) mediante el uso de la herramienta vssadmin.exe. Este comportamiento es altamente sospechoso y está comúnmente asociado a ataques de ransomware o actividades de impacto, ya que impide la recuperación de archivos del sistema. Técnicas MITRE ATT&CK: T1490 (Inhibit System Recovery), T1486 (Data Encrypted for Impact)
+references:
+  - https://attack.mitre.org/techniques/T1490/
+  - https://attack.mitre.org/techniques/T1486/
+tags:
+  - attack.impact
+  - attack.defense_evasion
+  - attack.t1490
+  - attack.t1486
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "vssadmin delete shadows"
-  condition: selection
+  selection_image:
+    Image|endswith: '\vssadmin.exe'
+  selection_cmd:
+    CommandLine|contains:
+      - 'delete shadows'
+      - 'Delete Shadows'
+  selection_suspicious_args:
+    CommandLine|contains:
+      - '/all'
+      - '/quiet'
+  selection_parent:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wmic.exe'
+  filter_noise:
+    ParentImage|endswith:
+      - '\svchost.exe'
+  condition: selection_image and selection_cmd and selection_suspicious_args and selection_parent and not filter_noise
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - IntegrityLevel
+falsepositives:
+  - Actividades administrativas muy puntuales de mantenimiento del sistema
+  - Herramientas de backup empresarial que gestionan snapshots (poco frecuente con estos parámetros)
+level: high
 ```
 
+7️⃣    
+</> Detecta el uso de la herramienta wbadmin.exe para eliminar catálogos de copias de seguridad o backups del sistema
 ```
-</> ATT&CK:  - yaml
-title: Delete Backup Catalog
-logsource: {product: windows}
+</> ATT&CK: T1490, T1486 - yaml
+title: Backup Catalog Deletion via WBAdmin Indicative of Impact Activity
+id: 9d2f1b67-5c3a-4e8f-b2c1-wbadmin-delete-009
+status: experimental
+description: Detecta el uso de la herramienta wbadmin.exe para eliminar catálogos de copias de seguridad o backups del sistema. Este comportamiento es altamente sospechoso y suele estar asociado a actividades destructivas como ransomware. Técnicas MITRE ATT&CK: T1490 (Inhibit System Recovery), T1486 (Data Encrypted for Impact)
+references:
+  - https://attack.mitre.org/techniques/T1490/
+  - https://attack.mitre.org/techniques/T1486/
+tags:
+  - attack.impact
+  - attack.defense_evasion
+  - attack.t1490
+  - attack.t1486
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "wbadmin delete"
-  condition: selection
+  selection_image:
+    Image|endswith: '\wbadmin.exe'
+  selection_cmd:
+    CommandLine|contains:
+      - 'delete catalog'
+      - 'delete backup'
+      - 'delete systemstatebackup'
+  selection_suspicious_args:
+    CommandLine|contains:
+      - '-quiet'
+      - '/quiet'
+  selection_parent:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wmic.exe'
+  filter_noise:
+    ParentImage|endswith:
+      - '\svchost.exe'
+  condition: selection_image and selection_cmd and selection_suspicious_args and selection_parent and not filter_noise
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - IntegrityLevel
+falsepositives:
+  - Actividades administrativas muy puntuales de gestión de backups
+  - Herramientas corporativas de backup que utilicen wbadmin de forma automatizada
+level: high
 ```
 
+8️⃣     
+</>  Detecta actividades de impacto tipo ransomware. incluida la eliminación de copias de seguridad
 ```
-</> ATT&CK:  - yaml
-title: Service Stop
-logsource: {product: windows}
+</> ATT&CK: T1490, T1489, T1486, T1068 - yaml
+title: High Confidence Impact Activity (Ransomware-Like Behavior Chain)
+id: 1f7e3d92-6a4c-4e91-8b25-impact-chain-011
+status: experimental
+description: Detecta una cadena de comportamiento sospechosa asociada a actividades de impacto tipo ransomware. Incluye la eliminación de copias de seguridad (vssadmin, wbadmin), modificación del arranque del sistema (bcdedit) y parada de servicios críticos mediante comandos. La concurrencia de estos eventos indica un intento claro de impedir la recuperación del sistema. Técnicas MITRE ATT&CK: T1490 (Inhibit System Recovery), T1489 (Service Stop), T1486 (Data Encrypted for Impact), T1068 (Exploitation for Privilege Escalation - contexto posible)
+references:
+  - https://attack.mitre.org/techniques/T1490/
+  - https://attack.mitre.org/techniques/T1489/
+  - https://attack.mitre.org/techniques/T1486/
+tags:
+  - attack.impact
+  - attack.ransomware
+  - attack.t1490
+  - attack.t1489
+  - attack.t1486
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "net stop"
-  condition: selection
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains:
+      - 'delete shadows'
+      - '/all'
+  selection_wbadmin:
+    Image|endswith: '\wbadmin.exe'
+    CommandLine|contains:
+      - 'delete catalog'
+      - 'delete backup'
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  selection_service_stop:
+    CommandLine|contains:
+      - 'net stop'
+    CommandLine|contains|all:
+      - 'net stop'
+      - 'WinDefend'
+  selection_parent:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  condition: selection_parent and (selection_vssadmin or selection_wbadmin or selection_bcdedit or selection_service_stop)
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - IntegrityLevel
+falsepositives:
+  - Actividades administrativas muy específicas y controladas en entornos de laboratorio
+  - Operaciones avanzadas de recuperación o testing de resiliencia (muy poco frecuentes)
+level: high
 ```
 
+
+9️⃣   
+</> Detecta actividad de renombrado masivo de archivos con cambio de extensión
 ```
-</> ATT&CK:  - yaml
-title: Mass File Rename
-logsource: {product: windows}
+</> ATT&CK: T1486, T1059 - yaml
+title: High Volume File Extension Change Indicative of Ransomware Activity
+id: 3c9a7e2b-6f51-4d8a-9e33-mass-extension-change-013
+status: experimental
+description: Detecta actividad de renombrado masivo de archivos con cambio de extensión, especialmente cuando ocurre en un corto periodo de tiempo y mediante procesos   de scripting o intérpretes de comandos. Esta regla está diseñada para ser utilizada con capacidades de agregación para identificar volumen anómalo de eventos. Técnicas MITRE ATT&CK: T1486 (Data Encrypted for Impact), T1059 (Command and Scripting Interpreter)
+references:
+  - https://attack.mitre.org/techniques/T1486/
+  - https://attack.mitre.org/techniques/T1059/
+tags:
+  - attack.impact
+  - attack.ransomware
+  - attack.t1486
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "rename"
-  condition: selection
+  selection_process:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+  selection_rename:
+    CommandLine|contains:
+      - ' rename '
+      - ' ren '
+  selection_extension_change:
+    CommandLine|contains:
+      - '.locked'
+      - '.encrypted'
+      - '.crypt'
+      - '.enc'
+      - '.lock'
+      - '.crypto'
+  timeframe: 5m
+  condition: selection_process and selection_rename and selection_extension_change
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+  - CurrentDirectory
+  - TargetFilename
+falsepositives:
+  - Scripts legítimos de transformación masiva de archivos con cambios de extensión
+  - Procesos de migración o archivado de datos (poco frecuentes con estas extensiones)
+level: high
 ```
 
+1️⃣0️⃣   
+</> Detecta la creación o modificación de archivos con extensiones asociadas a ransomware. Requiere correlacionarse con el SIEM
 ```
 </> ATT&CK:  - yaml
-title: Suspicious File Extension Change
-logsource: {product: windows}
+title: Suspicious File Extension Change Associated with Ransomware Activity
+id: 6a4d9f21-8c3e-4b77-b5d9-extension-change-014
+status: experimental
+description: Detecta la creación o modificación de archivos con extensiones asociadas a ransomware (por ejemplo, .locked, .encrypted, .crypt). Para que sea eficaz debe correlacionarse con múltiples eventos en un corto periodo de tiempo. Configuración recomendada en SIEM: ≥ 10–30 eventos, mismo host o usuario, en ≤ 5 minutos. Técnicas MITRE ATT&CK: T1486 (Data Encrypted for Impact)
+references:
+  - https://attack.mitre.org/techniques/T1486/
+tags:
+  - attack.impact
+  - attack.ransomware
+  - attack.t1486
+logsource:
+  product: windows
 detection:
-  selection:
-    TargetFilename|contains: ".locked"
-  condition: selection
+  selection_extension:
+    TargetFilename|contains:
+      - '.locked'
+      - '.encrypted'
+      - '.crypt'
+      - '.enc'
+      - '.lock'
+      - '.crypto'
+  selection_paths:
+    TargetFilename|contains:
+      - '\\Users\\'
+      - '\\Desktop\\'
+      - '\\Documents\\'
+      - '\\Downloads\\'
+  filter_noise:
+    TargetFilename|endswith:
+      - '.log'
+      - '.tmp'
+  timeframe: 5m
+  condition: selection_extension and selection_paths and not filter_noise
+fields:
+  - TargetFilename
+  - Image
+  - User
+  - Hostname
+falsepositives:
+  - Herramientas legítimas de cifrado o archivado (muy poco frecuentes con estas extensiones)
+  - Entornos de pruebas de malware o laboratorios controlados
+level: high
 ```
