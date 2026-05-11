@@ -1,23 +1,23 @@
 <H1>LATERAL MOVEMENT & DISCOVERY</H1>
 ### REGLAS SIGMA: Lateral Movement & Discovery
 
-1. Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
-2. Inicio de sesión remoto RDP sospechoso (logon tipo 10)
-3. Ejecución sospechosa de PsExec mediante línea de comandos    
-4. Ejecución remota sospechosa vía WMI (WMIC)   
-5. Ejecución remota sospechosa vía WinRM
-6. Enumeración sospechosa de recursos compartidos
-7. Uso sospechoso de NLTest para reconocimiento de dominio
-8. Ejecución sospechosa de ipconfig para descubrimiento de red
-9. Ejecución sospechosa de netstat para descubrimiento de red
+1. Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3) [🔗](#Inicio-de-sesión-de-red-sospechoso-con-cuentas-privilegiadas-o-de-servicio-(logon-tipo-3))
+2. Inicio de sesión remoto RDP sospechoso (logon tipo 10) [🔗](#Inicio-de-sesión-remoto-RDP-sospechoso-(logon-tipo-10)) 
+3. Ejecución sospechosa de PsExec mediante línea de comandos [🔗](#Ejecución-sospechosa-de-PsExec-mediante-línea-de-comandos)
+4. Ejecución remota sospechosa vía WMI (WMIC) [🔗](#Ejecución-remota-sospechosa-vía-WMI-(WMIC)) 
+5. Ejecución remota sospechosa vía WinRM [🔗](#Ejecución-remota-sospechosa-vía-WinRM)
+6. Enumeración sospechosa de recursos compartidos [🔗](3Enumeración-sospechosa-de-recursos-compartidos)
+7. Uso sospechoso de NLTest para reconocimiento de dominio [🔗](#Uso-sospechoso-de-NLTest-para-reconocimiento-de-dominio)
+8. Ejecución sospechosa de ipconfig para descubrimiento de red [🔗](#Ejecución-sospechosa-de-ipconfig-para-descubrimiento-de-red)
+9. Ejecución sospechosa de netstat para descubrimiento de red [🔗](#Ejecución-sospechosa-de-netstat-para-descubrimiento-de-red)
 10. Ejecución sospechosa del comando whoami [🔗](#Ejecución-sospechosa-del-comando-whoami)
 
 
 <H3>REGLAS</H3>
 
 
-###1️⃣   
-</> Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
+1️⃣   
+# Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
 ```
 </> ATT&CK: T1021 y T1078 - yaml
 title: Suspicious Network Logon with Privileged or Service Account
@@ -90,7 +90,7 @@ level: high
 ```
 
 2️⃣   
-</> Inicio de sesión remoto RDP sospechoso (logon tipo 10)
+# Inicio de sesión remoto RDP sospechoso (logon tipo 10)
 ```
 </> ATT&CK:  - yaml
 title: Suspicious Remote Desktop Logon with Privileged or Non-Standard Account
@@ -149,7 +149,7 @@ fields:
 
 
 3️⃣    
-</> Ejecución sospechosa de PsExec mediante línea de comandos
+# Ejecución sospechosa de PsExec mediante línea de comandos
 ```
 </> ATT&CK: T1021.002 y T1569.002 - yaml
 title: Suspicious PsExec Execution via Command Line
@@ -203,7 +203,7 @@ level: high
 ```
 
 4️⃣   
-</> Ejecución remota sospechosa vía WMI (WMIC)
+# Ejecución remota sospechosa vía WMI (WMIC)
 ```
 </> ATT&CK: T1047 y T1021 - yaml
 title: Suspicious WMI Remote Execution via WMIC Command
@@ -257,7 +257,7 @@ level: high
 ```
 
 5️⃣    
-</> Ejecución remota sospechosa vía WinRM
+# Ejecución remota sospechosa vía WinRM
 ```
 </> ATT&CK:  - yaml
 title: Suspicious WinRM Remote Command Execution
@@ -315,7 +315,7 @@ falsepositives:
 ```
 
 6️⃣   
-</> Enumeración sospechosa de recursos compartidos
+# Enumeración sospechosa de recursos compartidos
 ```
 </> ATT&CK:  T1135, T1069 y T1059 - yaml
 title: Suspicious Network Share Enumeration via Net Command
@@ -372,7 +372,7 @@ level: medium
 
 
 7️⃣    
-</> Uso sospechoso de NLTest para reconocimiento de dominio
+# Uso sospechoso de NLTest para reconocimiento de dominio
 ```
 title: Suspicious Domain Discovery via NLTest Command
 id: c5a2e1d7-9b4f-4d8c-8e6a-1f3b7a2c9d77
@@ -431,7 +431,7 @@ level: high
 
 
 8️⃣    
-</> Ejecución sospechosa de ipconfig para descubrimiento de red
+# Ejecución sospechosa de ipconfig para descubrimiento de red
 ```
 </> ATT&CK:  - yaml
 title: Suspicious IPConfig Execution for Network Enumeration
@@ -485,7 +485,7 @@ level: medium
 
 
 9️⃣   
-</> Ejecución sospechosa de netstat para descubrimiento de red
+# Ejecución sospechosa de netstat para descubrimiento de red
 ```
 </> ATT&CK: T1049 y T1059  - yaml
 title: Suspicious Netstat Execution for Network Discovery
@@ -541,7 +541,7 @@ level: medium
 
 
 1️⃣0️⃣   
-## Ejecución sospechosa del comando whoami
+# Ejecución sospechosa del comando whoami
 ```
 </> ATT&CK:  T1033 y T1059 - yaml
 title: Suspicious Whoami Execution from Command Line
