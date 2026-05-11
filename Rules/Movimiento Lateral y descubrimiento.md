@@ -4,7 +4,7 @@
 1. Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3) [🔗](#Inicio-de-sesión-de-red-sospechoso-con-cuentas-privilegiadas-o-de-servicio-(logon-tipo-3))
 2. Inicio de sesión remoto RDP sospechoso (logon tipo 10) [🔗](#Inicio-de-sesión-remoto-RDP-sospechoso-%28logon-tipo-10%29) 
 3. Ejecución sospechosa de PsExec mediante línea de comandos [🔗](#Ejecución-sospechosa-de-PsExec-mediante-línea-de-comandos)
-4. Ejecución remota sospechosa vía WMI (WMIC) [🔗](#Ejecución-remota-sospechosa-vía-WMI-%28WMIC%29) 
+4. Ejecución remota sospechosa vía WMI (WMIC) [🔗](#ejecución-remota-sospechosa-vía-wmi-%28wmicC%29) 
 5. Ejecución remota sospechosa vía WinRM [🔗](#Ejecución-remota-sospechosa-vía-WinRM)
 6. Enumeración sospechosa de recursos compartidos [🔗](3Enumeración-sospechosa-de-recursos-compartidos)
 7. Uso sospechoso de NLTest para reconocimiento de dominio [🔗](#Uso-sospechoso-de-NLTest-para-reconocimiento-de-dominio)
