@@ -1,5 +1,5 @@
 <H1>LATERAL MOVEMENT & DISCOVERY</H1>
-### Lateral Movement & Discovery
+### REGLAS SIGMA: Lateral Movement & Discovery
 
 1. Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
 2. Inicio de sesión remoto RDP sospechoso (logon tipo 10)
@@ -8,8 +8,10 @@
 5. Ejecución remota sospechosa vía WinRM   
 
 
+<h3>REGLAS</h3>
 
-1️⃣   
+
+###1️⃣   
 </> Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
 ```
 </> ATT&CK: T1021 y T1078 - yaml
