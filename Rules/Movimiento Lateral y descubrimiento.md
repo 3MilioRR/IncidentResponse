@@ -5,7 +5,12 @@
 2. Inicio de sesión remoto RDP sospechoso (logon tipo 10)
 3. Ejecución sospechosa de PsExec mediante línea de comandos    
 4. Ejecución remota sospechosa vía WMI (WMIC)   
-5. Ejecución remota sospechosa vía WinRM   
+5. Ejecución remota sospechosa vía WinRM
+6. Enumeración sospechosa de recursos compartidos
+7. Uso sospechoso de NLTest para reconocimiento de dominio
+8. Ejecución sospechosa de ipconfig para descubrimiento de red
+9. Ejecución sospechosa de netstat para descubrimiento de red
+10. Ejecución sospechosa del comando whoami
 
 
 <H3>REGLAS</H3>
@@ -310,53 +315,281 @@ falsepositives:
 ```
 
 6️⃣   
-</>
+</> Enumeración sospechosa de recursos compartidos
 ```
-</> ATT&CK:  - yaml
-title: Whoami Execution
-logsource: {product: windows}
+</> ATT&CK:  T1135, T1069 y T1059 - yaml
+title: Suspicious Network Share Enumeration via Net Command
+id: 7d3a9c5e-2f1b-4c8d-9e6a-5b2c7f1a8d66
+status: experimental
+description: Detecta la enumeración de recursos compartidos en sistemas Windows mediante el comando "net share", utilizado para listar los shares disponibles en un equipo. Se utiliza en fases de reconocimiento tras compromiso, para identificar posibles vectores de movimiento lateral. Técnicas MITRE ATT&CK: T1135 (Network Share Discovery), T1069 (Permission Groups Discovery - contexto relacionado) y T1059 (Command and Scripting Interpreter)
+references:
+  - https://attack.mitre.org/techniques/T1135/
+tags:
+  - attack.discovery
+  - attack.lateral_movement
+  - attack.t1135
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "whoami"
-  condition: selection
+  selection_net_share:
+    CommandLine|re:
+      - '(?i).*\\bnet(\\.exe)?\\s+share\\b.*'
+      - '(?i).*\\bnet(\\.exe)?\\s+view\\b.*\\\\\\\\.*'   # enumeración remota de shares
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_machine_accounts:
+    User|endswith: '$'
+  filter_known_parent_processes:
+    ParentImage:
+      - 'C:\\Windows\\System32\\services.exe'
+      - 'C:\\Windows\\System32\\svchost.exe'
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+      - 'C:\\Program Files\\System Center\\*'
+  filter_scripted_noise:
+    CommandLine|contains:
+      - 'health'
+      - 'monitor'
+      - 'inventory'
+  condition: selection_net_share
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores consultando recursos compartidos manualmente
+  - Scripts de inventario o auditoría de red
+  - Herramientas de gestión IT o monitorización
+  - Actividad legítima en tareas de soporte o troubleshooting
+level: medium
 ```
 
+
+7️⃣    
+</> Uso sospechoso de NLTest para reconocimiento de dominio
 ```
-</> ATT&CK:  - yaml
-title: Netstat Execution
-logsource: {product: windows}
+title: Suspicious Domain Discovery via NLTest Command
+id: c5a2e1d7-9b4f-4d8c-8e6a-1f3b7a2c9d77
+status: experimental
+description: Detecta el uso del comando "nltest" en sistemas Windows, herramienta utilizada para obtener información sobre controladores de dominio, confianza entre dominios y estado de autenticación. Se emplea para el reconocimiento en entornos Active Directory usando parámetros típicos (/dclist, /domain_trusts, /dsgetdc, ... ). Técnicas MITRE ATT&CK: T1482 (Domain Trust Discovery), T1018 (Remote System Discovery) y T1059 (Command and Scripting Interpreter).
+references:
+  - https://attack.mitre.org/techniques/T1482/
+  - https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nltest
+tags:
+  - attack.discovery
+  - attack.t1482
+  - attack.t1018
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "netstat"
-  condition: selection
+  selection_nltest:
+    CommandLine|re:
+      - '(?i).*\\bnltest(\\.exe)?\\b.*\\/dclist.*'
+      - '(?i).*\\bnltest(\\.exe)?\\b.*\\/dsgetdc.*'
+      - '(?i).*\\bnltest(\\.exe)?\\b.*\\/domain_trusts.*'
+      - '(?i).*\\bnltest(\\.exe)?\\b.*\\/trusted_domains.*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_machine_accounts:
+    User|endswith: '$'
+  filter_known_parent_processes:
+    ParentImage:
+      - 'C:\\Windows\\System32\\services.exe'
+      - 'C:\\Windows\\System32\\lsass.exe'
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+      - 'C:\\Program Files\\System Center\\*'
+  filter_scripted_noise:
+    CommandLine|contains:
+      - 'health'
+      - 'monitor'
+      - 'test'
+  condition: selection_nltest
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores ejecutando consultas de dominio para troubleshooting
+  - Scripts de auditoría de Active Directory
+  - Herramientas de inventario o monitorización de infraestructura
+  - Actividad legítima en controladores de dominio o servidores administrativos
+level: high
 ```
 
+
+8️⃣    
+</> Ejecución sospechosa de ipconfig para descubrimiento de red
 ```
 </> ATT&CK:  - yaml
-title: IPConfig Execution
-logsource: {product: windows}
+title: Suspicious IPConfig Execution for Network Enumeration
+id: 2a7e5c4d-8b1f-4c9a-9d3e-6f2b1a7c5e99
+status: experimental
+description: Detecta la ejecución del comando "ipconfig" en sistemas Windows, utilizado para obtener información de configuración de red como direcciones IP, puertas de enlace y DNS. Este comando es común en fases de reconocimiento tras compromiso, permitiendo al atacante entender la topología básica de red. Técnicas MITRE ATT&CK: T1016 (System Network Configuration Discovery) y T1059 (Command and Scripting Interpreter).
+references:
+  - https://attack.mitre.org/techniques/T1016/
+tags:
+  - attack.discovery
+  - attack.t1016
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection
-    CommandLine|contains: "ipconfig"
-  condition: selection
+  selection_ipconfig:
+    CommandLine|re:
+      - '(?i).*\\bipconfig(\\.exe)?\\b.*\\/all.*'
+      - '(?i).*\\bipconfig(\\.exe)?\\b.*\\/displaydns.*'
+      - '(?i).*\\bipconfig(\\.exe)?\\b.*\\/allcompartments.*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_known_parent_processes:
+    ParentImage:
+      - 'C:\\Windows\\System32\\services.exe'
+      - 'C:\\Windows\\System32\\svchost.exe'
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+  filter_scripted_noise:
+    CommandLine|contains:
+      - 'health'
+      - 'diagnostic'
+      - 'monitor'
+  condition: selection_ipconfig
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores realizando tareas de troubleshooting de red
+  - Scripts de inventario o diagnóstico
+  - Herramientas de monitorización
+  - Ejecuciones legítimas en soporte técnico
+level: medium
 ```
 
+
+9️⃣   
+</> Ejecución sospechosa de netstat para descubrimiento de red
 ```
-</> ATT&CK:  - yaml
-title: NLTest Usage
-logsource: {product: windows}
+</> ATT&CK: T1049 y T1059  - yaml
+title: Suspicious Netstat Execution for Network Discovery
+id: 9c2a1d7e-4f6b-4d3a-8b1c-5e7f2a9d6c33
+status: experimental
+description: Detecta la ejecución del comando "netstat" en sistemas Windows, comúnmente utilizado para enumerar conexiones de red activas, puertos abiertos y servicios en escucha. Esta actividad es típica en fases tempranas de reconocimiento tras compromiso, permitiendo al atacante   comprender la exposición de red del sistema. Técnicas MITRE ATT&CK: T1049 (System Network Connections Discovery) y T1059 (Command and Scripting Interpreter).
+references:
+  - https://attack.mitre.org/techniques/T1049/
+tags:
+  - attack.discovery
+  - attack.t1049
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "nltest"
-  condition: selection
+  selection_netstat:
+    CommandLine|re:
+      - '(?i).*\\bnetstat(\\.exe)?\\b.*-a.*'
+      - '(?i).*\\bnetstat(\\.exe)?\\b.*-n.*'
+      - '(?i).*\\bnetstat(\\.exe)?\\b.*-o.*'
+      - '(?i).*\\bnetstat(\\.exe)?\\b.*-an.*'
+      - '(?i).*\\bnetstat(\\.exe)?\\b.*-ano.*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_known_parent_processes:
+    ParentImage:
+      - 'C:\\Windows\\System32\\services.exe'
+      - 'C:\\Windows\\System32\\svchost.exe'
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+  filter_scripted_noise:
+    CommandLine|contains:
+      - 'health'
+      - 'diagnostic'
+      - 'monitor'
+  condition: selection_netstat
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores ejecutando netstat para troubleshooting
+  - Herramientas de monitorización de red o rendimiento
+  - Scripts internos de diagnóstico
+  - Actividad legítima en servidores (especialmente troubleshooting en caliente)
+level: medium
 ```
 
+
+1️⃣0️⃣   
+</> Ejecución sospechosa del comando whoami
 ```
-</> ATT&CK:  - yaml
-title: Share Enumeration
-logsource: {product: windows}
+</> ATT&CK:  T1033 y T1059 - yaml
+title: Suspicious Whoami Execution from Command Line
+id: e1f3c7b2-8a4d-4c9f-9b2a-7d5e6f1c3a88
+status: experimental
+description: Detecta la ejecución del comando "whoami" en sistemas Windows, comúnmente utilizado por atacantes para obtener información sobre el contexto de usuario tras comprometer un sistema. Técnicas MITRE ATT&CK: T1033 (System Owner/User Discovery) y T1059 (Command and Scripting Interpreter).
+references:
+  - https://attack.mitre.org/techniques/T1033/
+tags:
+  - attack.discovery
+  - attack.execution
+  - attack.t1033
+  - attack.t1059
+logsource:
+  product: windows
 detection:
-  selection:
-    CommandLine|contains: "net share"
-  condition: selection
+  selection_whoami:
+    CommandLine|re:
+      - '(?i).*\\bwhoami(\\.exe)?\\b.*'
+      - '(?i).*\\bwhoami\\b.*/all.*'
+      - '(?i).*\\bwhoami\\b.*/groups.*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_known_parent_processes:
+    ParentImage:
+      - 'C:\\Windows\\System32\\services.exe'
+      - 'C:\\Windows\\System32\\winlogon.exe'
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+  filter_scripted_noise:
+    CommandLine|contains:
+      - 'health'
+      - 'diagnostic'
+      - 'test'
+  condition: selection_whoami
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores ejecutando comandos de diagnóstico manual
+  - Scripts internos de comprobación de identidad o permisos
+  - Herramientas de monitorización o inventario
+  - Actividad de troubleshooting
+level: medium
 ```
