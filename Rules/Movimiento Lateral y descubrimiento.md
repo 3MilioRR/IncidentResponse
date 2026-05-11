@@ -1,16 +1,12 @@
 <H1>LATERAL MOVEMENT & DISCOVERY</H1>
 ### Lateral Movement & Discovery
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+1. Inicio de sesión de red sospechoso con cuentas privilegiadas o de servicio (logon tipo 3)
+2. Inicio de sesión remoto RDP sospechoso (logon tipo 10)
+3. Ejecución sospechosa de PsExec mediante línea de comandos    
+4. Ejecución remota sospechosa vía WMI (WMIC)   
+5. Ejecución remota sospechosa vía WinRM   
+
 
 
 1️⃣   
@@ -87,48 +83,232 @@ level: high
 ```
 
 2️⃣   
-</> 
+</> Inicio de sesión remoto RDP sospechoso (logon tipo 10)
 ```
 </> ATT&CK:  - yaml
-title: PsExec Usage
-logsource: {product: windows}
-detection:
-  selection:
-    CommandLine|contains: "psexec"
-  condition: selection
-```
-
-```
-</> ATT&CK:  - yaml
-title: WMI Remote Execution
-logsource: {product: windows}
-detection:
-  selection:
-    CommandLine|contains: "wmic"
-  condition: selection
-```
-
-```
-</> ATT&CK:  - yaml
-title: WinRM Usage
-logsource: {product: windows}
-detection:
-  selection:
-    CommandLine|contains: "winrm"
-  condition: selection
-```
-
-```
-</> ATT&CK:  - yaml
-title: RDP Logon
-logsource: {product: windows}
+title: Suspicious Remote Desktop Logon with Privileged or Non-Standard Account
+id: b4e7c8d1-6f2a-4a9b-9c3d-8e5f1a2b7c55
+status: experimental
+description: Detecta inicios de sesión interactivos remotos mediante RDP (LogonType 10) en sistemas Windows, centrados en cuentas con indicios de privilegio o uso técnico con sesiones remotas potencialmente sensibles. Técnicas MITRE ATT&CK: T1021.001 (Remote Services - Remote Desktop Protocol) y T1078 (Valid Accounts)
+references:
+  - https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4624
+  - https://attack.mitre.org/techniques/T1021/001/
+tags:
+  - attack.lateral_movement
+  - attack.initial_access
+  - attack.t1021.001
+  - attack.t1078
+logsource:
+  product: windows
+  service: security
 detection:
   selection:
     EventID: 4624
     LogonType: 10
+  filter_builtin_accounts:
+    TargetUserName:
+      - 'ANONYMOUS LOGON'
+      - 'LOCAL SERVICE'
+      - 'NETWORK SERVICE'
+      - 'SYSTEM'
+  filter_machine_accounts:
+    TargetUserName|endswith: '$'
+  filter_system_sids:
+    TargetUserSid:
+      - 'S-1-5-18'
+      - 'S-1-5-19'
+      - 'S-1-5-20'
+  filter_local_ip:
+    IpAddress:
+      - '127.0.0.1'
+      - '::1'
+      - '-'
+  filter_empty_workstation:
+    WorkstationName: '-'
+  suspicious_account_patterns:
+    TargetUserName|re:
+      - '(?i).*admin.*'
+      - '(?i).*adm.*'
+      - '(?i).*svc.*'
+      - '(?i).*backup.*'
+      - '(?i).*sql.*'
   condition: selection
+             and suspicious_account_patterns
+             and not 1 of filter_*
+fields:
+  - EventID
+  - LogonType
 ```
 
+
+3️⃣    
+</> Ejecución sospechosa de PsExec mediante línea de comandos
+```
+</> ATT&CK: T1021.002 y T1569.002 - yaml
+title: Suspicious PsExec Execution via Command Line
+id: a7c2e3f4-5b9d-4e2f-8f1c-3d6e9a7b2c11
+status: experimental
+description: Detecta la ejecución de PsExec o herramientas compatibles a través de la línea de comandos en sistemas Windows, centrándose únicamente en ejecuciones reales del binario o invocaciones desde procesos de usuario, evitando coincidencias genéricas o contextos no ejecutables. Técnicas MITRE ATT&CK: T1021.002 (Remote Services - SMB/Windows Admin Shares) y T1569.002 (System Services - Service Execution)
+references:
+  - https://learn.microsoft.com/en-us/sysinternals/downloads/psexec
+  - https://attack.mitre.org/techniques/T1021/002/
+  - https://attack.mitre.org/techniques/T1569/002/
+tags:
+  - attack.lateral_movement
+  - attack.execution
+  - attack.t1021.002
+  - attack.t1569.002
+logsource:
+  product: windows
+detection:
+  selection_process:
+    CommandLine|re:
+      - '(?i).*\\bpsexec(64)?\\.exe\\b.*'
+      - '(?i).*\\bpsexec\\b.+\\\\\\\\.*'   # ejecución remota tipo \\host
+  filter_known_paths:
+    Image:
+      - 'C:\\Windows\\System32\\psexec.exe'
+      - 'C:\\Windows\\SysWOW64\\psexec.exe'
+  filter_parent_legit_tools:
+    ParentImage:
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+      - 'C:\\Program Files\\Backup\\*'
+      - 'C:\\Program Files\\System Center\\*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+  condition: selection_process
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Uso legítimo de PsExec por administradores de sistemas (especialmente en troubleshooting)
+  - Herramientas IT o scripts automatizados que embeben PsExec
+  - Soluciones de gestión remota o despliegue que utilicen PsExec internamente
+  - Actividades de pentesting autorizadas
+level: high
+```
+
+4️⃣   
+</> Ejecución remota sospechosa vía WMI (WMIC)
+```
+</> ATT&CK: T1047 y T1021 - yaml
+title: Suspicious WMI Remote Execution via WMIC Command
+id: 3b8f6c1d-2e7a-4a9d-b5c1-9d2e6f7a4c22
+status: experimental
+description: Detecta el uso de WMIC (Windows Management Instrumentation Command-line) para ejecutar comandos de forma remota. Técnicas MITRE ATT&CK: T1047 (Windows Management Instrumentation) y T1021 (Remote Services).
+references:
+  - https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmic
+  - https://attack.mitre.org/techniques/T1047/
+tags:
+  - attack.lateral_movement
+  - attack.execution
+  - attack.t1047
+  - attack.t1021
+logsource:
+  product: windows
+detection:
+  selection_wmic:
+    CommandLine|re:
+      - '(?i).*wmic.*\\/node:.*process.*call.*create.*'
+      - '(?i).*wmic.*\\/node:.*cmd\\.exe.*'
+      - '(?i).*wmic.*\\/node:.*powershell.*'
+  filter_local_execution:
+    CommandLine|re:
+      - '(?i).*wmic.*process.*call.*create.*'   # sin /node suele ser local
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+  filter_known_admin_tools:
+    ParentImage:
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+      - 'C:\\Program Files\\System Center\\*'
+      - 'C:\\Program Files\\Microsoft Endpoint Manager\\*'
+  condition: selection_wmic
+             and not filter_local_execution
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Herramientas legítimas de administración remota que utilizan WMIC
+  - Scripts de administración en entornos legacy
+  - Plataformas de gestión (SCCM, monitoring, inventario)
+  - Actividad de administradores en tareas de mantenimiento
+level: high
+```
+
+5️⃣    
+</> Ejecución remota sospechosa vía WinRM
+```
+</> ATT&CK:  - yaml
+title: Suspicious WinRM Remote Command Execution
+id: 6e4d2a1f-9b73-4c5e-8a2f-1c9d7e3b5f44
+status: experimental
+description: Detecta el uso de WinRM (Windows Remote Management) para ejecutar comandos de forma remota a través de herramientas como PowerShell Remoting o frameworks ofensivos. Se centra en ejecuciones reales mediante línea de comandos (winrm, winrs). Técnicas MITRE ATT&CK: T1021.006 (Remote Services - Windows Remote Management) y T1059.001 (Command and Scripting Interpreter - PowerShell).
+references:
+  - https://learn.microsoft.com/en-us/windows/win32/winrm/portal
+  - https://attack.mitre.org/techniques/T1021/006/
+tags:
+  - attack.lateral_movement
+  - attack.execution
+  - attack.t1021.006
+  - attack.t1059.001
+logsource:
+  product: windows
+detection:
+  selection_winrm_cli:
+    CommandLine|re:
+      - '(?i).*\\bwinrs\\b.*'
+      - '(?i).*\\bwinrm\\b.*invoke.*'
+      - '(?i).*\\bwinrm\\b.*create.*'
+      - '(?i).*\\bwinrm\\b.*remote.*'
+  selection_powershell_remoting:
+    CommandLine|re:
+      - '(?i).*Invoke-Command.*-ComputerName.*'
+      - '(?i).*Enter-PSSession.*-ComputerName.*'
+      - '(?i).*New-PSSession.*-ComputerName.*'
+  filter_localhost:
+    CommandLine|re:
+      - '(?i).*localhost.*'
+      - '(?i).*127\\.0\\.0\\.1.*'
+  filter_system_accounts:
+    User:
+      - 'NT AUTHORITY\\SYSTEM'
+      - 'NT AUTHORITY\\LOCAL SERVICE'
+      - 'NT AUTHORITY\\NETWORK SERVICE'
+  filter_known_admin_tools:
+    ParentImage:
+      - 'C:\\Program Files\\Microsoft Monitoring Agent\\Agent\\MonitoringHost.exe'
+      - 'C:\\Program Files\\System Center\\*'
+      - 'C:\\Program Files\\Microsoft Endpoint Manager\\*'
+  condition: (selection_winrm_cli or selection_powershell_remoting)
+             and not filter_localhost
+             and not 1 of filter_*
+fields:
+  - CommandLine
+  - Image
+  - ParentImage
+  - User
+  - ComputerName
+falsepositives:
+  - Administradores utilizando PowerShell Remoting de forma legítima
+  - Herramientas de gestión IT (SCCM, Intune, scripts corporativos)
+```
+
+6️⃣   
+</>
 ```
 </> ATT&CK:  - yaml
 title: Whoami Execution
