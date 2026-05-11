@@ -10,7 +10,7 @@
 7. Uso sospechoso de NLTest para reconocimiento de dominio
 8. Ejecución sospechosa de ipconfig para descubrimiento de red
 9. Ejecución sospechosa de netstat para descubrimiento de red
-10. Ejecución sospechosa del comando whoami
+10. Ejecución sospechosa del comando whoami [🔗](#Ejecución-sospechosa-del-comando-whoami)
 
 
 <H3>REGLAS</H3>
@@ -541,7 +541,7 @@ level: medium
 
 
 1️⃣0️⃣   
-</> Ejecución sospechosa del comando whoami
+## Ejecución sospechosa del comando whoami
 ```
 </> ATT&CK:  T1033 y T1059 - yaml
 title: Suspicious Whoami Execution from Command Line
