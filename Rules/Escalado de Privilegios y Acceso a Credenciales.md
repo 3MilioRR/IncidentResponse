@@ -21,7 +21,7 @@ El Acceso a Credenciales es la técnica utilizada por los atacantes para obtener
 <H3>REGLAS</H3>
 
 1️⃣   
-# Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
+### Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
 </> AAT&CK: T1098.007 - yaml
 ```
 title: User Added to Administrators Group
@@ -55,7 +55,7 @@ tags:
 ```
 
 2️⃣    
-# Asignación de privilegios especiales a cuentas no habituales
+### Asignación de privilegios especiales a cuentas no habituales
 </> ATT&CK: T1078 - yaml
 ```
 title: Special Privileges Assigned to Non-Standard Account
