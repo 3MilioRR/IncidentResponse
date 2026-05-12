@@ -1,11 +1,26 @@
-<h1>ESCALADO DE PRIVILEGIOS Y ACCESO A CREDENCIALES (ADVANCED)</h1>
+<h1>ESCALADO DE PRIVILEGIOS Y ACCESO A CREDENCIALES</h1>
 
 ### Privilege Escalation & Credential Access
 
-:one:   
-</> Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
-```
+- La Escalada de Privilegios es la acción de explotar vulnerabilidades, configuraciones erróneas o fallos de diseño para elevar los permisos de una cuenta de usuario limitado (bajos privilegios) a una cuenta con mayores permisos, como Administrador (Windows) o Root (Linux/Unix).
+- El Acceso a Credenciales es la técnica utilizada por los atacantes para obtener nombres de usuario y contraseñas, hashes de contraseñas, tokens de autenticación o tickets de Kerberos
+
+
+1. Adición de un usuario a grupos privilegiados de tipo Administrators [🔗](#Detecta-la-adición-de-un-usuario-a-grupos-privilegiados-de-tipo-Administrators)
+2. Inicio de sesión remoto RDP sospechoso (logon tipo 10) [🔗](#Inicio-de-sesión-remoo-RDP-sospechoso-logon-tipo-10) 
+3. Ejecución sospechosa de PsExec mediante línea de comandos [🔗](#Ejecución-sospechosa-de-PsExec-mediante-línea-de-comandos)
+4. Ejecución remota sospechosa vía WMI (WMIC) [🔗](#ejecución-remota-sospechosa-vía-wmi-wmic) 
+5. Ejecución remota sospechosa vía WinRM [🔗](#Ejecución-remota-sospechosa-vía-WinRM)
+6. Enumeración sospechosa de recursos compartidos [🔗](3Enumeración-sospechosa-de-recursos-compartidos)
+7. Uso sospechoso de NLTest para reconocimiento de dominio [🔗](#Uso-sospechoso-de-NLTest-para-reconocimiento-de-dominio)
+8. Ejecución sospechosa de ipconfig para descubrimiento de red [🔗](#Ejecución-sospechosa-de-ipconfig-para-descubrimiento-de-red)
+9. Ejecución sospechosa de netstat para descubrimiento de red [🔗](#Ejecución-sospechosa-de-netstat-para-descubrimiento-de-red)
+10. Ejecución sospechosa del comando whoami [🔗](#Ejecución-sospechosa-del-comando-whoami)
+
+1️⃣   
+# Detecta la adición de un usuario a grupos privilegiados de tipo Administrators
 </> AAT&CK: T1098.007 - yaml
+```
 title: User Added to Administrators Group
 description: Detecta la adición de un usuario a grupos privilegiados de tipo Administrators (tanto locales como de dominio), lo que podría indicar un intento de escalado de privilegios.
 logsource:
