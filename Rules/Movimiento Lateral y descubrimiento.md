@@ -1,4 +1,5 @@
 <H1>LATERAL MOVEMENT & DISCOVERY</H1>
+
 ### REGLAS SIGMA: Lateral Movement & Discovery
 
 Este conjunto de reglas permite identificar actividad del atacante despues de obtener acceso inicial, cuando trate de explorar la red, el sistema o la infraestructura para encontrar vulnerabilidades, moverse de un equipo a otro y escalar privilegios
