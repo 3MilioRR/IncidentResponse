@@ -1,5 +1,8 @@
 <H1> SIGMA RULES </H1>
-Las reglas SIGMA son plantillas genéricas para detectar actividad sospechosa en logs.
+
+SIGMA es un metalenguaje genérico y abierto, creado por Florian Roth, que permite describir en formato YAML reglas para detectar registros relevantes y actividad sospechosa en logs de una manera directa. 
+
+El formato de la regla es estrucrurado, pero muy flexible y aplicable a cualquier tipo de registro. 
 
 :triangular_flag_on_post: Piensa en ellas como: “Si pasa esto en los logs → puede ser un ataque”
 
