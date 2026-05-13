@@ -2,11 +2,21 @@
 
 ### Exfiltration & Impact
 
+La exfiltración de datos (data exfiltration) se relaciona con el robo, transferencia o copia no autorizada y deliberada de información confidencial desde un dispositivo, servidor o red hacia un entorno externo controlado por un atacante. Se considera una de las etapas más peligrosas de un ciberataque, ya que implica la salida efectiva de datos críticos.
+
+Por otro lado, el impacto se refiere a las consecuencias perjudiciales, tanto financieras como reputacionales, que sufre la organización tras este robo.
+
+Aquí he apuntado algunas reglas que cubren estas casuísticas.
+
+1. Creación de archivos comprimidos mediante herramientas comunes [🔗](#detectar-la-creación-de-archivos-comprimidos-mediante-herramientas-comunes)
+2. 
+
+<H3>REGLAS</H3>
 
 1️⃣    
-</> Detecta la creación de archivos comprimidos (ZIP, RAR, 7Z) mediante herramientas comunes
+### Detectar la creación de archivos comprimidos mediante herramientas comunes
+</> ATT&CK: T1560, T1041 - yaml
 ```
-</> ATT&CK: T1560, T1041  - yaml
 title: Suspicious Archive Creation for Exfiltration Preparation
 id: b7a7c9c2-8f2e-4d3b-9e2c-archive-exfil-001
 status: experimental
