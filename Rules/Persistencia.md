@@ -2,10 +2,20 @@
 
 ### Persistence
 
-:one:    
-</> Detecta la creación de tareas programadas en sistemas Windows
-```
+Las técnicas de persistencia son métodos utilizados por ciberatacantes para mantener el acceso continuo a un sistema comprometido incluso después de reinicios, cambios de contraseñas o cierres de sesión. Estas tácticas permiten a los intrusos asegurar su permanencia a largo plazo para robar datos, espiar o moverse lateralmente sin ser detectados.
+
+Aquí hay algunas reglas que detectan estos métodos.
+
+1. Detecta la creación de tareas programadas en sistemas Windows [🔗](#detecta-la-creación-de-tareas-programadas-en-sistemas-Windows)
+2. Detecta la modificación o creación de claves de ejecución automática en el registro de Windows [🔗](#detecta-la-modificación-o-creación-de-claves-de-ejecución-automática-en-el-registro-de-Windows)
+3. 
+
+<H3>REGLAS</H3>
+
+1️⃣    
+### Detecta la creación de tareas programadas en sistemas Windows
 </> ATT&CK: T1053.005 - yaml
+```
 title: Scheduled Task Creation
 description: Detecta la creación de tareas programadas en sistemas Windows mediante el uso de la utilidad schtasks.exe. Ojo con falsos positivos porque los administradores lo usan comunmente de forma legítima. Relacionado con MITRE ATT&CK T1053.005 (Scheduled Task/Job: Scheduled Task).
 logsource:
@@ -31,9 +41,9 @@ level: medium
 ```
 
 2️⃣   
-</> Detecta la modificación o creación de claves de ejecución automática en el registro de Windows (Run Keys)
-```
+### Detecta la modificación o creación de claves de ejecución automática en el registro de Windows
 </> ATT&CK: T1547.001 - yaml
+```
 title: Registry Run Key Persistence
 description: Detecta la modificación o creación de claves de ejecución automática en el registro de Windows (Run Keys). Ojo nuevamente porque las aplicaciones instaladas tambien dejan marca en el registro, por lo que debe analizarse el contexto y la ruta del binario asociado. Relacionado con MITRE ATT&CK T1547.001 (Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder).
 logsource:
