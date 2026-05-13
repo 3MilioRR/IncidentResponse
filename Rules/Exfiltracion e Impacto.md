@@ -9,7 +9,15 @@ Por otro lado, el impacto se refiere a las consecuencias perjudiciales, tanto fi
 Aquí he apuntado algunas reglas que cubren estas casuísticas.
 
 1. Creación de archivos comprimidos mediante herramientas comunes [🔗](#detectar-la-creación-de-archivos-comprimidos-mediante-herramientas-comunes)
-2. 
+2. Ejecución de 7Zip desde procesos padre sospechosos [🔗](#detecta-la-ejecución-de-7Zip-desde-procesos-padre-sospechosos)
+3. Uso de comandos de copia de archivos, cuando el destino son carpetas temporales o inusuales [🔗](#detecta-el-uso-de-comandos-de-copia-de-archivos-cuando-el-destino-son-carpetas-temporales-o-inusuales)
+4. Detecta conexiones salientes de procesos poco habituales o intérpretes de comandos y scripting [🔗](#detecta-conexiones-salientes-de-procesos-poco-habituales-o-intérpretes-de-comandos-y-scripting)
+5. Uso de PowerShell para realizar posibles subidas o exfiltración de datos [🔗](#detecta-el-uso-de-powershell-para-realizar-posibles-subidas-o-exfiltración-de-datos)
+6. Eliminación de shadow copies mediante el uso de la herramienta vssadmin [🔗](#detecta-la-eliminación-de-shadow-copies-mediante-el-uso-de-la-herramienta-vssadmin)
+7. Detecta el uso de wbadmin para eliminar copias de seguridad o backups del sistema [🔗](#detecta-el-uso-de-la-herramienta-wbadmin-para-eliminar-catálogos-de-copias-de-seguridad-o-backups-del-sistema)
+8. Detecta actividades de impacto tipo ransomware [🔗](#detecta-actividades-de-impacto-tipo-ransomware)
+9. Detecta actividad de renombrado masivo de archivos con cambio de extensión [🔗](#detecta-actividad-de-renombrado-masivo-de-archivos-con-cambio-de-extensión)
+10. Detecta la creación o modificación de archivos con extensiones asociadas a ransomware [🔗](#detecta-la-creación-o-modificación-de-archivos-con-extensiones-asociadas-a-ransomware)
 
 <H3>REGLAS</H3>
 
@@ -60,9 +68,9 @@ level: medium
 ```
 
 2️⃣    
-</> Detecta la ejecución de 7-Zip desde procesos padre sospechosos
-```    
+### Detecta la ejecución de 7Zip desde procesos padre sospechosos
 </> ATT&CK: T1560, T1059 - yaml
+```    
 title: Suspicious 7-Zip Usage with Suspicious Parent Process
 id: 8c3d2a5f-9e12-4c8a-b7a1-7zip-parent-003
 status: experimental
@@ -111,9 +119,9 @@ level: medium
 ```
 
 3️⃣    
-</> Detecta el uso de comandos de copia de archivos cuando el destino son carpetas temporales o inusuales
-```
+### Detecta el uso de comandos de copia de archivos cuando el destino son carpetas temporales o inusuales
 </> ATT&CK: T1074, T1560, T1059 - yaml
+```
 title: Suspicious File Copy to Temporary or Unusual Locations
 id: e3b7c5a1-2d8f-4a9c-a6e3-copy-temp-staging-005
 status: experimental
@@ -171,9 +179,9 @@ level: medium
 ```
 
 4️⃣    
-</> Detecta conexiones salientes de procesos poco habituales o intérpretes de comandos/scripting.
-```
+### Detecta conexiones salientes de procesos poco habituales o intérpretes de comandos y scripting
 </> ATT&CK: T1041, T1071, T1059 - yaml
+```
 title: Suspicious Outbound Connection to External Network from Uncommon Process
 id: a9f3d6b2-5c7e-4e81-92c4-external-conn-006
 status: experimental
@@ -243,9 +251,9 @@ level: medium
 ```
 
 5️⃣    
-</> Detecta el uso de PowerShell para realizar posibles subidas o exfiltración de datos.
-```
+### Detecta el uso de PowerShell para realizar posibles subidas o exfiltración de datos
 </> ATT&CK: T1041, T1059.001, T1105 - yaml
+```
 title: Suspicious PowerShell File Upload or Data Exfiltration Activity
 id: f6c92e41-3a7b-4d55-8e91-ps-upload-007
 status: experimental
@@ -302,9 +310,9 @@ level: medium
 ```
 
 6️⃣   
-</>
-```
+### Detecta la eliminación de shadow copies mediante el uso de la herramienta vssadmin
 </> ATT&CK: T1490, T1486 - yaml
+```
 title: Shadow Copy Deletion via VSSAdmin Indicative of Impact Activity
 id: c4a8d1e9-7b2e-4f6b-91d3-vssadmin-delete-008
 status: experimental
@@ -353,9 +361,9 @@ level: high
 ```
 
 7️⃣    
-</> Detecta el uso de la herramienta wbadmin.exe para eliminar catálogos de copias de seguridad o backups del sistema
-```
+### Detecta el uso de la herramienta wbadmin para eliminar catálogos de copias de seguridad o backups del sistema
 </> ATT&CK: T1490, T1486 - yaml
+```
 title: Backup Catalog Deletion via WBAdmin Indicative of Impact Activity
 id: 9d2f1b67-5c3a-4e8f-b2c1-wbadmin-delete-009
 status: experimental
@@ -405,9 +413,9 @@ level: high
 ```
 
 8️⃣     
-</>  Detecta actividades de impacto tipo ransomware. incluida la eliminación de copias de seguridad
-```
+### Detecta actividades de impacto tipo ransomware
 </> ATT&CK: T1490, T1489, T1486, T1068 - yaml
+```
 title: High Confidence Impact Activity (Ransomware-Like Behavior Chain)
 id: 1f7e3d92-6a4c-4e91-8b25-impact-chain-011
 status: experimental
@@ -466,9 +474,9 @@ level: high
 
 
 9️⃣   
-</> Detecta actividad de renombrado masivo de archivos con cambio de extensión
-```
+### Detecta actividad de renombrado masivo de archivos con cambio de extensión
 </> ATT&CK: T1486, T1059 - yaml
+```
 title: High Volume File Extension Change Indicative of Ransomware Activity
 id: 3c9a7e2b-6f51-4d8a-9e33-mass-extension-change-013
 status: experimental
@@ -519,9 +527,9 @@ level: high
 ```
 
 1️⃣0️⃣   
-</> Detecta la creación o modificación de archivos con extensiones asociadas a ransomware. Requiere correlacionarse con el SIEM
+### Detecta la creación o modificación de archivos con extensiones asociadas a ransomware
+</> ATT&CK: T1486 - yaml
 ```
-</> ATT&CK:  - yaml
 title: Suspicious File Extension Change Associated with Ransomware Activity
 id: 6a4d9f21-8c3e-4b77-b5d9-extension-change-014
 status: experimental
