@@ -8,7 +8,9 @@ Aquí hay algunas reglas que detectan estos métodos.
 
 1. Detecta la creación de tareas programadas en sistemas Windows [🔗](#detecta-la-creación-de-tareas-programadas-en-sistemas-Windows)
 2. Detecta la modificación o creación de claves de ejecución automática en el registro de Windows [🔗](#detecta-la-modificación-o-creación-de-claves-de-ejecución-automática-en-el-registro-de-Windows)
-3. 
+3. Instalación de nuevos servicios dertectando evento 7045 del registro de Windows [🔗](#detecta-la-instalación-de-nuevos-servicios-en-sistemas-windows-mediante-el-evento-7045-del-registro-de-eventos-de-sistemas)
+4. Detecta la configuración de servicios para ser ejecutarse desde rutas inusuales, potencialmente maliciosas, temporales o ubicaciones de datos [🔗](#detecta-servicios-configurados-para-ejecutarse-desde-rutas-inusuales-potencialmente-maliciosas-temporales-o-ubicaciones-de-datos)
+5. 
 
 <H3>REGLAS</H3>
 
@@ -73,7 +75,7 @@ level: medium
 ```
 
 3️⃣     
-</> Detecta la instalación de nuevos servicios en sistemas Windows mediante el evento 7045 del registro de eventos de sistemas
+### Detecta la instalación de nuevos servicios en sistemas Windows mediante el evento 7045 del registro de eventos de sistemas
 ```
 </> ATT&CK: T1543.003 - yaml
 title: New Service Installed
@@ -109,7 +111,7 @@ level: medium
 ```
 
 4️⃣    
-</> Detecta servicios configurados para ejecutarse desde rutas inusuales, potencialmente maliciosas, temporales o ubicaciones de datos.
+### Detecta servicios configurados para ejecutarse desde rutas inusuales, potencialmente maliciosas, temporales o ubicaciones de datos.
 ```
 </> ATT&CK: T1543.003 - yaml
 title: Suspicious Service Path
