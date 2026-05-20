@@ -10,7 +10,13 @@ Aquí hay algunas reglas que detectan estos métodos.
 2. Detecta la modificación o creación de claves de ejecución automática en el registro de Windows [🔗](#detecta-la-modificación-o-creación-de-claves-de-ejecución-automática-en-el-registro-de-Windows)
 3. Instalación de nuevos servicios dertectando evento 7045 del registro de Windows [🔗](#detecta-la-instalación-de-nuevos-servicios-en-sistemas-windows-mediante-el-evento-7045-del-registro-de-eventos-de-sistemas)
 4. Detecta la configuración de servicios para ser ejecutarse desde rutas inusuales, potencialmente maliciosas, temporales o ubicaciones de datos [🔗](#detecta-servicios-configurados-para-ejecutarse-desde-rutas-inusuales-potencialmente-maliciosas-temporales-o-ubicaciones-de-datos)
-5. 
+5. Detecta la creación de suscripciones persistentes de WMI (Windows Management Instrumentation) [🔗](#detecta-la-creación-de-suscripciones-persistentes-de-wmi-windows-management-instrumentation)
+6. Detecta la creación o modificación de archivos en las carpetas de inicio automático de Windows (Startup Folder) [🔗](#detecta-la-creación-o-modificación-de-archivos-en-las-carpetas-de-inicio-automático-de-windows-startup-folder)
+7. Detecta la ejecución de bibliotecas DLL desde directorios temporales de Windows [🔗](#detecta-la-ejecución-de-bibliotecas-dll-desde-directorios-temporales-de-windows)
+8. Detecta la modificación o creación de entradas en la clave de registro RunOnce de Windows [🔗](#detecta-la-modificación-o-creación-de-entradas-en-la-clave-de-registro-runonce-de-windows)
+9. Detecta modificaciones en servicios de Windows mediante el evento 7040 [🔗](#detecta-modificaciones-en-servicios-de-windows-mediante-el-evento-7040)
+10. Detecta la creación de tareas programadas en Windows que hacen referencia a binarios ubicados en rutas sospechosas [🔗](#detecta-la-creación-de-tareas-programadas-en-windows-que-hacen-referencia-a-binarios-ubicados-en-rutas-sospechosas)
+
 
 <H3>REGLAS</H3>
 
@@ -167,7 +173,7 @@ level: high
 ```
 
 5️⃣   
-</> Detecta la creación de suscripciones persistentes de WMI (Windows Management Instrumentation)
+### Detecta la creación de suscripciones persistentes de WMI (Windows Management Instrumentation)
 ```
 </> ATT&CK: T1546.003 - yaml
 title: WMI Persistence
@@ -210,7 +216,7 @@ level: high
 ```
 
 6️⃣    
-</> Detecta la creación o modificación de archivos en las carpetas de inicio automático de Windows (Startup Folder)
+### Detecta la creación o modificación de archivos en las carpetas de inicio automático de Windows (Startup Folder)
 ```
 </> ATT&CK: T1547.001 - yaml
 title: Startup Folder Modification
@@ -258,7 +264,7 @@ level: high
 ```
 
 7️⃣   
-</> Detecta la ejecución de bibliotecas DLL desde directorios temporales de Windows
+### Detecta la ejecución de bibliotecas DLL desde directorios temporales de Windows
 ```
 </> ATT&CK: T1574.001 - yaml
 title: DLL in Temp Execution
@@ -307,7 +313,7 @@ level: high
 ```
 
 8️⃣    
-</> Detecta la modificación o creación de entradas en la clave de registro RunOnce de Windows
+### Detecta la modificación o creación de entradas en la clave de registro RunOnce de Windows
 ```
 </> ATT&CK: T1547.001 - yaml
 title: Autorun Registry Modification
@@ -357,7 +363,7 @@ level: high
 ```
 
 9️⃣    
-</> Detecta modificaciones en servicios de Windows mediante el evento 7040,
+### Detecta modificaciones en servicios de Windows mediante el evento 7040
 ```
 </> ATT&CK: T1562.001 - yaml
 title: Service Modification
@@ -431,8 +437,8 @@ falsepositives:
 level: high
 ```
 
-:one:0️⃣    
-</> Detecta la creación de tareas programadas en Windows que hacen referencia a binarios ubicados en rutas sospechosas
+1️⃣0️⃣    
+### Detecta la creación de tareas programadas en Windows que hacen referencia a binarios ubicados en rutas sospechosas
 ```
 </> ATT&CK: T1053.005 - yaml
 title: Suspicious Scheduled Task Path
